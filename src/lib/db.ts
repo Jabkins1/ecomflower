@@ -16,7 +16,7 @@ let sqlJs: SqlJsStatic | null = null;
 // ─── Совместимый враппер ────────────────────────────────────────────────────
 
 type Row = Record<string, unknown>;
-type SqlVal = string | number | null | Uint8Array | boolean;
+type SqlVal = string | number | null | Uint8Array;
 
 class StatementWrapper {
   constructor(
