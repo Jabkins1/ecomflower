@@ -13,9 +13,9 @@ export default async function HomePage() {
     LEFT JOIN categories c ON p.category_id = c.id
     WHERE p.is_featured = 1 AND p.in_stock = 1
     ORDER BY p.created_at DESC LIMIT 6
-  `).all() as Product[];
+  `).all() as unknown as Product[];
 
-  const categories = db.prepare('SELECT * FROM categories ORDER BY name').all() as { id: number; name: string; slug: string }[];
+  const categories = db.prepare('SELECT * FROM categories ORDER BY name').all() as unknown as { id: number; name: string; slug: string }[];
 
   const categoryImages: Record<string, string> = {
     'rozy':     'https://images.unsplash.com/photo-1519378058457-4c29a0a2efac?w=500&q=85',

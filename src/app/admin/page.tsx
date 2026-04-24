@@ -7,15 +7,15 @@ export const dynamic = 'force-dynamic';
 export default async function AdminDashboard() {
   const db = await getDb();
 
-  const totalProducts = (db.prepare('SELECT COUNT(*) as c FROM products').get() as { c: number }).c;
-  const totalOrders = (db.prepare('SELECT COUNT(*) as c FROM orders').get() as { c: number }).c;
-  const newOrders = (db.prepare("SELECT COUNT(*) as c FROM orders WHERE status='new'").get() as { c: number }).c;
-  const totalRevenue = (db.prepare("SELECT COALESCE(SUM(total),0) as s FROM orders WHERE status != 'cancelled'").get() as { s: number }).s;
+  const totalProducts = (db.prepare('SELECT COUNT(*) as c FROM products').get() as unknown as { c: number }).c;
+  const totalOrders = (db.prepare('SELECT COUNT(*) as c FROM orders').get() as unknown as { c: number }).c;
+  const newOrders = (db.prepare("SELECT COUNT(*) as c FROM orders WHERE status='new'").get() as unknown as { c: number }).c;
+  const totalRevenue = (db.prepare("SELECT COALESCE(SUM(total),0) as s FROM orders WHERE status != 'cancelled'").get() as unknown as { s: number }).s;
   const recentOrders = db.prepare(`
     SELECT o.*, COUNT(oi.id) as items_count FROM orders o
     LEFT JOIN order_items oi ON o.id = oi.order_id
     GROUP BY o.id ORDER BY o.created_at DESC LIMIT 5
-  `).all() as ({ items_count: number; id: number; customer_name: string; total: number; status: string; created_at: string })[];
+  `).all() as unknown as ({ items_count: number; id: number; customer_name: string; total: number; status: string; created_at: string })[];
 
   const statusColors: Record<string, string> = {
     new: 'bg-blue-100 text-blue-700',

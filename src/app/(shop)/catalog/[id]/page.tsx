@@ -14,7 +14,7 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
     SELECT p.*, c.name as category_name, c.slug as category_slug
     FROM products p LEFT JOIN categories c ON p.category_id = c.id
     WHERE p.id = ?
-  `).get(id) as (Product & { category_slug?: string }) | undefined;
+  `).get(id) as unknown as (Product & { category_slug?: string }) | undefined;
 
   if (!product) notFound();
 
@@ -22,7 +22,7 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
     SELECT p.*, c.name as category_name FROM products p
     LEFT JOIN categories c ON p.category_id = c.id
     WHERE p.category_id = ? AND p.id != ? AND p.in_stock = 1 LIMIT 4
-  `).all(product.category_id, product.id) as Product[];
+  `).all(product.category_id, product.id) as unknown as Product[];
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-10">
