@@ -23,10 +23,12 @@ export default function AdminProductsPage() {
 
   const load = async () => {
     setLoading(true);
-    const res = await fetch('/api/products');
+    const res = await fetch('/api/products', { cache: 'no-store' });
     const data = await res.json();
     setProducts(data.products);
-    setCategories(data.categories);
+    const catRes = await fetch('/api/admin/categories', { cache: 'no-store' });
+    const catData = await catRes.json();
+    setCategories(catData);
     setLoading(false);
   };
 
