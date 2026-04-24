@@ -1,0 +1,33 @@
+@import "tailwindcss";
+
+:root {
+  --background: #fdf8f8;
+  --foreground: #1f2937;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+/* Скрываем Next.js Dev Tools badge */
+nextjs-portal,
+[data-nextjs-dialog-overlay],
+#__next-build-watcher {
+  display: none !important;
+}
+
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
