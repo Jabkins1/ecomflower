@@ -26,16 +26,17 @@ function CatalogContent() {
     if (activeCategory) params.set('category', activeCategory);
     if (search) params.set('search', search);
 
-    fetch(`/api/products?${params}`)
+    fetch(`/api/products?${params}`, { cache: 'no-store' })
       .then(r => r.json())
-      .then(d => { setData(d); setLoading(false); });
+      .then(d => { setData(d); setLoading(false); })
+      .catch(() => setLoading(false));
   }, [activeCategory, search]);
 
   const setCategory = (slug: string) => {
     const params = new URLSearchParams(searchParams);
     if (slug) params.set('category', slug);
     else params.delete('category');
-    router.push(`/catalog?${params}`);
+    router.push(`/catalog?${params}`, { scroll: false });
   };
 
   return (
