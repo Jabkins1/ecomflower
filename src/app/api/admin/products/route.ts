@@ -11,7 +11,7 @@ export async function POST(request: NextRequest) {
     }
 
     const db = await getDb();
-    const result = db.prepare(`
+    const result = await db.prepare(`
       INSERT INTO products (name, description, price, old_price, category_id, image_url, in_stock, is_featured)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?)
     `).run(name, description || null, price, old_price || null, category_id || null, image_url || null, in_stock ?? 1, is_featured ?? 0);

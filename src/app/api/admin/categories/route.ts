@@ -4,7 +4,7 @@ import { getDb } from '@/lib/db';
 export async function GET() {
   try {
     const db = await getDb();
-    const categories = db.prepare(`
+    const categories = await db.prepare(`
       SELECT c.*, COUNT(p.id) as product_count
       FROM categories c
       LEFT JOIN products p ON p.category_id = c.id
@@ -23,11 +23,11 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Название и slug обязательны' }, { status: 400 });
     }
     const db = await getDb();
-    const existing = db.prepare('SELECT id FROM categories WHERE slug = ?').get(slug);
+    const existing = await db.prepare('SELECT id FROM categories WHERE slug = ?').get(slug);
     if (existing) {
       return NextResponse.json({ error: 'Категория с таким slug уже существует' }, { status: 400 });
     }
-    const result = db.prepare(
+    const result = await db.prepare(
       'INSERT INTO categories (name, slug, description) VALUES (?, ?, ?)'
     ).run(name, slug, description || null);
     return NextResponse.json({ success: true, id: result.lastInsertRowid }, { status: 201 });

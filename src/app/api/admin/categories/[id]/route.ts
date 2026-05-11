@@ -9,11 +9,11 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
       return NextResponse.json({ error: 'Название и slug обязательны' }, { status: 400 });
     }
     const db = await getDb();
-    const existing = db.prepare('SELECT id FROM categories WHERE slug = ? AND id != ?').get(slug, id);
+    const existing = await db.prepare('SELECT id FROM categories WHERE slug = ? AND id != ?').get(slug, id);
     if (existing) {
       return NextResponse.json({ error: 'Категория с таким slug уже существует' }, { status: 400 });
     }
-    db.prepare('UPDATE categories SET name = ?, slug = ?, description = ? WHERE id = ?')
+    await db.prepare('UPDATE categories SET name = ?, slug = ?, description = ? WHERE id = ?')
       .run(name, slug, description || null, id);
     return NextResponse.json({ success: true });
   } catch (error) {
@@ -25,14 +25,14 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
   try {
     const { id } = await params;
     const db = await getDb();
-    const count = (db.prepare('SELECT COUNT(*) as c FROM products WHERE category_id = ?').get(id) as { c: number }).c;
+    const count = ((await db.prepare('SELECT COUNT(*) as c FROM products WHERE category_id = ?').get(id)) as unknown as { c: number }).c;
     if (count > 0) {
       return NextResponse.json(
         { error: `Нельзя удалить: в категории есть ${count} товаров. Сначала переназначьте или удалите их.` },
         { status: 400 }
       );
     }
-    db.prepare('DELETE FROM categories WHERE id = ?').run(id);
+    await db.prepare('DELETE FROM categories WHERE id = ?').run(id);
     return NextResponse.json({ success: true });
   } catch (error) {
     return NextResponse.json({ error: 'Не удалось удалить категорию' }, { status: 500 });

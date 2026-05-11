@@ -13,27 +13,20 @@ export async function POST(request: NextRequest) {
     const db = await getDb();
     const total = items.reduce((sum: number, item: { price: number; quantity: number }) => sum + item.price * item.quantity, 0);
 
-    const insertOrder = db.prepare(`
+    const result = await db.prepare(`
       INSERT INTO orders (customer_name, phone, email, delivery_date, delivery_time, delivery_address, comment, total)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-    `);
+    `).run(customer_name, phone, email || null, delivery_date || null, delivery_time || null, delivery_address || null, comment || null, total);
+    const orderId = result.lastInsertRowid;
 
     const insertItem = db.prepare(`
       INSERT INTO order_items (order_id, product_id, product_name, quantity, price)
       VALUES (?, ?, ?, ?, ?)
     `);
 
-    const createOrder = db.transaction(() => {
-      const result = insertOrder.run(customer_name, phone, email || null, delivery_date || null, delivery_time || null, delivery_address || null, comment || null, total);
-      const orderId = result.lastInsertRowid;
-
-      for (const item of items) {
-        insertItem.run(orderId, item.product_id || null, item.product_name, item.quantity, item.price);
-      }
-      return orderId;
-    });
-
-    const orderId = createOrder();
+    for (const item of items) {
+      await insertItem.run(orderId, item.product_id || null, item.product_name, item.quantity, item.price);
+    }
     return NextResponse.json({ success: true, order_id: orderId }, { status: 201 });
   } catch (error) {
     console.error(error);
@@ -44,7 +37,7 @@ export async function POST(request: NextRequest) {
 export async function GET() {
   try {
     const db = await getDb();
-    const orders = db.prepare('SELECT * FROM orders ORDER BY created_at DESC').all();
+    const orders = await db.prepare('SELECT * FROM orders ORDER BY created_at DESC').all();
     return NextResponse.json(orders);
   } catch (error) {
     return NextResponse.json({ error: 'Failed to fetch orders' }, { status: 500 });

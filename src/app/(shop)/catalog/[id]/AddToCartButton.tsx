@@ -30,12 +30,12 @@ export default function AddToCartButton({ product }: { product: Product }) {
     <div className="flex flex-col sm:flex-row gap-3">
       <button
         onClick={handleAdd}
-        className={`flex-1 flex items-center justify-center gap-2 px-6 py-4 rounded-2xl font-semibold transition-all ${added ? 'bg-green-500 text-white' : 'bg-rose-500 hover:bg-rose-600 text-white'}`}
+        className={`flex-1 flex items-center justify-center gap-2 px-6 py-4 rounded-2xl font-semibold transition-all ${added ? 'bg-green-500 text-white' : 'bg-green-500 hover:bg-green-600 text-white'}`}
       >
         {added ? <><Check size={20} /> Добавлено!</> : <><ShoppingBag size={20} /> В корзину</>}
       </button>
       {inCart && (
-        <Link href="/cart" className="flex-1 flex items-center justify-center gap-2 px-6 py-4 rounded-2xl font-semibold border-2 border-rose-500 text-rose-600 hover:bg-rose-50 transition-colors">
+        <Link href="/cart" className="flex-1 flex items-center justify-center gap-2 px-6 py-4 rounded-2xl font-semibold border-2 border-green-500 text-green-600 hover:bg-green-50 transition-colors">
           Перейти в корзину ({inCart.quantity})
         </Link>
       )}

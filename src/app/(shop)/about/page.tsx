@@ -5,8 +5,8 @@ export default function AboutPage() {
     <div className="max-w-5xl mx-auto px-4 sm:px-6 py-12">
       {/* Hero */}
       <div className="text-center mb-16">
-        <p className="text-rose-500 font-medium text-sm uppercase tracking-widest mb-3">О нас</p>
-        <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">История FlowerLove</h1>
+        <p className="text-green-500 font-medium text-sm uppercase tracking-widest mb-3">О нас</p>
+        <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">История ZELENAYA</h1>
         <p className="text-gray-500 text-lg max-w-2xl mx-auto leading-relaxed">
           Мы — небольшой семейный цветочный магазин с большим сердцем. С 2018 года мы дарим людям радость через красоту живых цветов.
         </p>
@@ -28,7 +28,7 @@ export default function AboutPage() {
               Всё началось с маленькой мастерской на кухне. Наша основательница Анна всегда любила цветы и однажды решила превратить хобби в дело жизни. Первые букеты она составляла для подруг и соседей.
             </p>
             <p>
-              Сегодня FlowerLove — это команда из 8 профессиональных флористов, ежедневно создающих уникальные букеты. Мы работаем только со свежими цветами от проверенных поставщиков и местных фермерских хозяйств.
+              Сегодня ZELENAYA — это команда из 8 профессиональных флористов, ежедневно создающих уникальные букеты. Мы работаем только со свежими цветами от проверенных поставщиков и местных фермерских хозяйств.
             </p>
             <p>
               Мы верим, что цветы могут изменить настроение, выразить самые глубокие чувства и сделать любой день особенным.
@@ -48,8 +48,8 @@ export default function AboutPage() {
             { icon: Award, title: 'Качество', desc: 'Работаем только с лучшими поставщиками России и Эквадора' },
           ].map(({ icon: Icon, title, desc }) => (
             <div key={title} className="text-center">
-              <div className="bg-rose-50 w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <Icon className="text-rose-500" size={26} />
+              <div className="bg-green-50 w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <Icon className="text-green-500" size={26} />
               </div>
               <h3 className="font-semibold text-gray-900 mb-2">{title}</h3>
               <p className="text-gray-500 text-sm leading-relaxed">{desc}</p>
@@ -73,14 +73,14 @@ export default function AboutPage() {
                 <img src={member.img} alt={member.name} className="w-full h-full object-cover" />
               </div>
               <h4 className="font-semibold text-gray-800 text-sm">{member.name}</h4>
-              <p className="text-rose-500 text-xs mt-0.5">{member.role}</p>
+              <p className="text-green-500 text-xs mt-0.5">{member.role}</p>
             </div>
           ))}
         </div>
       </div>
 
       {/* Stats */}
-      <div className="bg-gradient-to-r from-rose-500 to-pink-500 rounded-3xl p-8 text-white text-center">
+      <div className="bg-gradient-to-r from-green-500 to-lime-500 rounded-3xl p-8 text-white text-center">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
           {[
             { num: '6+', label: 'Лет на рынке' },
@@ -90,7 +90,7 @@ export default function AboutPage() {
           ].map(({ num, label }) => (
             <div key={label}>
               <div className="text-4xl font-bold mb-1">{num}</div>
-              <div className="text-rose-100 text-sm">{label}</div>
+              <div className="text-green-100 text-sm">{label}</div>
             </div>
           ))}
         </div>

@@ -77,7 +77,7 @@ export default function AdminProductsPage() {
           <h1 className="text-2xl font-bold text-gray-900">Товары</h1>
           <p className="text-gray-500 text-sm mt-1">{products.length} позиций в каталоге</p>
         </div>
-        <button onClick={openAdd} className="bg-rose-500 hover:bg-rose-600 text-white px-4 py-2.5 rounded-xl text-sm font-semibold flex items-center gap-2 transition-colors">
+        <button onClick={openAdd} className="bg-green-500 hover:bg-green-600 text-white px-4 py-2.5 rounded-xl text-sm font-semibold flex items-center gap-2 transition-colors">
           <Plus size={16} /> Добавить товар
         </button>
       </div>
@@ -94,48 +94,48 @@ export default function AdminProductsPage() {
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Название *</label>
-                <input value={form.name} onChange={e => setForm(p => ({ ...p, name: e.target.value }))} className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-rose-400" placeholder="Название товара" />
+                <input value={form.name} onChange={e => setForm(p => ({ ...p, name: e.target.value }))} className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-green-400" placeholder="Название товара" />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Описание</label>
-                <textarea value={form.description} onChange={e => setForm(p => ({ ...p, description: e.target.value }))} rows={3} className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-rose-400 resize-none" placeholder="Описание товара" />
+                <textarea value={form.description} onChange={e => setForm(p => ({ ...p, description: e.target.value }))} rows={3} className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-green-400 resize-none" placeholder="Описание товара" />
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Цена (₽) *</label>
-                  <input type="number" value={form.price} onChange={e => setForm(p => ({ ...p, price: e.target.value }))} className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-rose-400" placeholder="0" />
+                  <input type="number" value={form.price} onChange={e => setForm(p => ({ ...p, price: e.target.value }))} className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-green-400" placeholder="0" />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Старая цена (₽)</label>
-                  <input type="number" value={form.old_price} onChange={e => setForm(p => ({ ...p, old_price: e.target.value }))} className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-rose-400" placeholder="0" />
+                  <input type="number" value={form.old_price} onChange={e => setForm(p => ({ ...p, old_price: e.target.value }))} className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-green-400" placeholder="0" />
                 </div>
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Категория</label>
-                <select value={form.category_id} onChange={e => setForm(p => ({ ...p, category_id: e.target.value }))} className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-rose-400">
+                <select value={form.category_id} onChange={e => setForm(p => ({ ...p, category_id: e.target.value }))} className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-green-400">
                   <option value="">— Без категории —</option>
                   {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
                 </select>
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">URL изображения</label>
-                <input value={form.image_url} onChange={e => setForm(p => ({ ...p, image_url: e.target.value }))} className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-rose-400" placeholder="https://..." />
+                <input value={form.image_url} onChange={e => setForm(p => ({ ...p, image_url: e.target.value }))} className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-green-400" placeholder="https://..." />
                 {form.image_url && <img src={form.image_url} alt="" className="mt-2 w-24 h-24 object-cover rounded-lg" />}
               </div>
               <div className="flex gap-6">
                 <label className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
-                  <input type="checkbox" checked={form.in_stock === '1'} onChange={e => setForm(p => ({ ...p, in_stock: e.target.checked ? '1' : '0' }))} className="w-4 h-4 accent-rose-500" />
+                  <input type="checkbox" checked={form.in_stock === '1'} onChange={e => setForm(p => ({ ...p, in_stock: e.target.checked ? '1' : '0' }))} className="w-4 h-4 accent-green-500" />
                   В наличии
                 </label>
                 <label className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
-                  <input type="checkbox" checked={form.is_featured === '1'} onChange={e => setForm(p => ({ ...p, is_featured: e.target.checked ? '1' : '0' }))} className="w-4 h-4 accent-rose-500" />
+                  <input type="checkbox" checked={form.is_featured === '1'} onChange={e => setForm(p => ({ ...p, is_featured: e.target.checked ? '1' : '0' }))} className="w-4 h-4 accent-green-500" />
                   Хит продаж
                 </label>
               </div>
             </div>
 
             <div className="flex gap-3 mt-6">
-              <button onClick={handleSave} disabled={saving || !form.name || !form.price} className="flex-1 bg-rose-500 hover:bg-rose-600 disabled:bg-gray-300 text-white py-2.5 rounded-xl font-semibold text-sm flex items-center justify-center gap-2 transition-colors">
+              <button onClick={handleSave} disabled={saving || !form.name || !form.price} className="flex-1 bg-green-500 hover:bg-green-600 disabled:bg-gray-300 text-white py-2.5 rounded-xl font-semibold text-sm flex items-center justify-center gap-2 transition-colors">
                 <Check size={16} /> {saving ? 'Сохраняем...' : 'Сохранить'}
               </button>
               <button onClick={() => setShowForm(false)} className="px-4 py-2.5 border border-gray-200 rounded-xl text-sm text-gray-600 hover:bg-gray-50 transition-colors">
@@ -189,7 +189,7 @@ export default function AdminProductsPage() {
                     </td>
                     <td className="px-4 py-3">
                       <div className="flex gap-2">
-                        <button onClick={() => openEdit(p)} className="p-1.5 text-gray-400 hover:text-rose-500 transition-colors rounded-lg hover:bg-rose-50">
+                        <button onClick={() => openEdit(p)} className="p-1.5 text-gray-400 hover:text-green-500 transition-colors rounded-lg hover:bg-green-50">
                           <Pencil size={15} />
                         </button>
                         <button onClick={() => handleDelete(p.id)} className="p-1.5 text-gray-400 hover:text-red-500 transition-colors rounded-lg hover:bg-red-50">

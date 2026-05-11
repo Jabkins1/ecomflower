@@ -1,9 +1,6 @@
-/**
- * SQLite через sql.js (чистый WebAssembly).
- * Не требует нативной компиляции — работает на любой версии Node.js.
- */
-import initSqlJs from 'sql.js';
+﻿import initSqlJs from 'sql.js';
 import type { Database, SqlJsStatic } from 'sql.js';
+import { createClient, type Client } from '@libsql/client';
 import fs from 'fs';
 import path from 'path';
 
@@ -12,107 +9,149 @@ const DB_PATH = process.env.NODE_ENV === 'production'
   : path.join(process.cwd(), 'flower_shop.db');
 
 let sqlJs: SqlJsStatic | null = null;
-
-// ─── Совместимый враппер ────────────────────────────────────────────────────
+let remoteClient: Client | null = null;
 
 type Row = Record<string, unknown>;
 type SqlVal = string | number | null | Uint8Array;
+type RunResult = { changes: number; lastInsertRowid: number };
+
+function flatParams(params: unknown[]): unknown[] {
+  return params.length === 1 && Array.isArray(params[0]) ? params[0] : params;
+}
+
+function normalizeValue(value: unknown): unknown {
+  return typeof value === 'bigint' ? Number(value) : value;
+}
+
+function normalizeRow(row: Record<string, unknown>): Row {
+  return Object.fromEntries(Object.entries(row).map(([key, value]) => [key, normalizeValue(value)]));
+}
+
+function splitSql(sql: string): string[] {
+  return sql.split(';').map((part) => part.trim()).filter(Boolean);
+}
 
 class StatementWrapper {
   constructor(
-    private rawDb: Database,
     private wrapper: DbWrapper,
     private sql: string
   ) {}
 
-  all(...params: unknown[]): Row[] {
-    const stmt = this.rawDb.prepare(this.sql);
-    const flat = params.length === 1 && Array.isArray(params[0]) ? params[0] : params;
-    if (flat.length) stmt.bind(flat as SqlVal[]);
+  all(...params: unknown[]): Promise<Row[]> {
+    return this.wrapper.all(this.sql, flatParams(params));
+  }
+
+  get(...params: unknown[]): Promise<Row | undefined> {
+    return this.wrapper.get(this.sql, flatParams(params));
+  }
+
+  run(...params: unknown[]): Promise<RunResult> {
+    return this.wrapper.run(this.sql, flatParams(params));
+  }
+}
+
+export class DbWrapper {
+  constructor(
+    private localDb: Database | null,
+    private client: Client | null
+  ) {}
+
+  prepare(sql: string): StatementWrapper {
+    return new StatementWrapper(this, sql);
+  }
+
+  async all(sql: string, params: unknown[] = []): Promise<Row[]> {
+    if (this.client) {
+      const result = await this.client.execute({ sql, args: params as never[] });
+      return result.rows.map((row) => normalizeRow(row as Record<string, unknown>));
+    }
+
+    if (!this.localDb) return [];
+    const stmt = this.localDb.prepare(sql);
+    const flat = params as SqlVal[];
+    if (flat.length) stmt.bind(flat);
     const rows: Row[] = [];
     while (stmt.step()) rows.push(stmt.getAsObject() as Row);
     stmt.free();
     return rows;
   }
 
-  get(...params: unknown[]): Row | undefined {
-    const stmt = this.rawDb.prepare(this.sql);
-    const flat = params.length === 1 && Array.isArray(params[0]) ? params[0] : params;
-    if (flat.length) stmt.bind(flat as SqlVal[]);
-    if (stmt.step()) {
-      const row = stmt.getAsObject() as Row;
-      stmt.free();
-      return row;
-    }
-    stmt.free();
-    return undefined;
+  async get(sql: string, params: unknown[] = []): Promise<Row | undefined> {
+    const rows = await this.all(sql, params);
+    return rows[0];
   }
 
-  run(...params: unknown[]): { changes: number; lastInsertRowid: number } {
-    const stmt = this.rawDb.prepare(this.sql);
-    const flat = params.length === 1 && Array.isArray(params[0]) ? params[0] : params;
-    if (flat.length) stmt.bind(flat as SqlVal[]);
+  async run(sql: string, params: unknown[] = []): Promise<RunResult> {
+    if (this.client) {
+      const result = await this.client.execute({ sql, args: params as never[] });
+      return {
+        changes: Number(result.rowsAffected ?? 0),
+        lastInsertRowid: Number(result.lastInsertRowid ?? 0),
+      };
+    }
+
+    if (!this.localDb) return { changes: 0, lastInsertRowid: 0 };
+    const stmt = this.localDb.prepare(sql);
+    const flat = params as SqlVal[];
+    if (flat.length) stmt.bind(flat);
     stmt.step();
     stmt.free();
 
-    const meta = this.rawDb.exec('SELECT changes(), last_insert_rowid()');
+    const meta = this.localDb.exec('SELECT changes(), last_insert_rowid()');
     const changes = (meta[0]?.values[0][0] as number) ?? 0;
     const lastInsertRowid = (meta[0]?.values[0][1] as number) ?? 0;
-
-    if (!this.wrapper.txActive) this.wrapper.persist();
+    this.persist();
     return { changes, lastInsertRowid };
   }
-}
 
-export class DbWrapper {
-  txActive = false;
-
-  constructor(private db: Database) {}
-
-  prepare(sql: string): StatementWrapper {
-    return new StatementWrapper(this.db, this, sql);
-  }
-
-  exec(sql: string): void {
-    this.db.exec(sql);
-    if (!this.txActive) this.persist();
-  }
-
-  pragma(setting: string): void {
-    this.db.run(`PRAGMA ${setting}`);
-  }
-
-  transaction(fn: () => void): () => void {
-    return () => {
-      this.txActive = true;
-      this.db.run('BEGIN');
-      try {
-        fn();
-        this.db.run('COMMIT');
-        this.persist();
-      } catch (e) {
-        this.db.run('ROLLBACK');
-        throw e;
-      } finally {
-        this.txActive = false;
+  async exec(sql: string): Promise<void> {
+    for (const statement of splitSql(sql)) {
+      if (this.client) {
+        await this.client.execute(statement);
+      } else {
+        this.localDb?.exec(statement);
       }
-    };
+    }
+    this.persist();
   }
 
-  /** Для SQL-консоли: возвращает структурированные результаты. */
-  execQuery(sql: string): { columns: string[]; values: unknown[][] }[] {
-    return this.db.exec(sql) as { columns: string[]; values: unknown[][] }[];
+  async pragma(setting: string): Promise<void> {
+    if (this.client) return;
+    this.localDb?.run(`PRAGMA ${setting}`);
+  }
+
+  async execQuery(sql: string): Promise<{ columns: string[]; values: unknown[][] }[]> {
+    if (this.client) {
+      const result = await this.client.execute(sql);
+      return [{
+        columns: result.columns as string[],
+        values: result.rows.map((row) => result.columns.map((column) => normalizeValue((row as Record<string, unknown>)[column]))),
+      }];
+    }
+
+    return (this.localDb?.exec(sql) ?? []) as { columns: string[]; values: unknown[][] }[];
   }
 
   persist(): void {
-    const data = this.db.export();
+    if (!this.localDb) return;
+    const data = this.localDb.export();
     fs.writeFileSync(DB_PATH, Buffer.from(data));
   }
 }
 
-// ─── Инициализация ─────────────────────────────────────────────────────────
-
 export async function getDb(): Promise<DbWrapper> {
+  const tursoUrl = process.env.TURSO_DATABASE_URL;
+  const tursoToken = process.env.TURSO_AUTH_TOKEN;
+
+  if (tursoUrl) {
+    if (!remoteClient) {
+      remoteClient = createClient({ url: tursoUrl, authToken: tursoToken });
+    }
+    const db = new DbWrapper(null, remoteClient);
+    await initializeDb(db);
+    return db;
+  }
+
   if (!sqlJs) {
     sqlJs = await initSqlJs({
       locateFile: (f) =>
@@ -120,20 +159,19 @@ export async function getDb(): Promise<DbWrapper> {
     });
   }
 
-  // Читаем файл каждый раз — гарантирует актуальные данные после любых изменений
   const raw = fs.existsSync(DB_PATH)
     ? new sqlJs.Database(fs.readFileSync(DB_PATH))
     : new sqlJs.Database();
 
-  const db = new DbWrapper(raw);
-  db.pragma('journal_mode = WAL');
-  db.pragma('foreign_keys = ON');
-  initializeDb(db);
+  const db = new DbWrapper(raw, null);
+  await db.pragma('journal_mode = WAL');
+  await db.pragma('foreign_keys = ON');
+  await initializeDb(db);
   return db;
 }
 
-function initializeDb(db: DbWrapper) {
-  db.exec(`
+async function initializeDb(db: DbWrapper) {
+  await db.exec(`
     CREATE TABLE IF NOT EXISTS categories (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       name TEXT NOT NULL,
@@ -174,72 +212,63 @@ function initializeDb(db: DbWrapper) {
       quantity INTEGER NOT NULL,
       price REAL NOT NULL
     );
+    CREATE TABLE IF NOT EXISTS customers (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT NOT NULL,
+      email TEXT NOT NULL UNIQUE,
+      password_hash TEXT NOT NULL,
+      phone TEXT,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    );
+    CREATE TABLE IF NOT EXISTS reviews (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      customer_id INTEGER NOT NULL REFERENCES customers(id) ON DELETE CASCADE,
+      customer_name TEXT NOT NULL,
+      rating INTEGER NOT NULL,
+      text TEXT NOT NULL,
+      is_approved INTEGER DEFAULT 0,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    );
   `);
 
-  const row = db.prepare('SELECT COUNT(*) as c FROM categories').get() as { c: number };
-  if (row.c === 0) seedData(db);
+  const row = await db.prepare('SELECT COUNT(*) as c FROM categories').get() as { c: number } | undefined;
+  if (!row || Number(row.c) === 0) await seedData(db);
 }
 
-function seedData(db: DbWrapper) {
-  const ins = db.prepare(`
+async function seedData(db: DbWrapper) {
+  const categories = [
+    ['Розы', 'rozy', 'Классические розы всех сортов и оттенков'],
+    ['Пионы', 'piony', 'Нежные и пышные пионы'],
+    ['Тюльпаны', 'tyulpany', 'Весенние тюльпаны разных цветов'],
+    ['Букеты', 'bukety', 'Готовые букеты для любого повода'],
+    ['Полевые цветы', 'polevye', 'Нежные полевые цветы и луговые миксы'],
+  ];
+
+  for (const category of categories) {
+    await db.prepare('INSERT INTO categories (name, slug, description) VALUES (?, ?, ?)').run(...category);
+  }
+
+  const products: unknown[][] = [
+    ['Красные розы 25 шт', 'Классические алые розы премиум-сорта Ред Наоми. Длина стебля 60 см, крупный бутон. Символ страсти и любви.', 2900, 3400, 1, 'https://images.unsplash.com/photo-1519378058457-4c29a0a2efac?w=700&q=85', 1, 1],
+    ['Белые розы 15 шт', 'Нежные белые розы сорта Аваланш. Безупречная форма бутона, стоят до 10 дней в вазе.', 1950, null, 1, 'https://images.unsplash.com/photo-1508610048659-a06b669e3321?w=700&q=85', 1, 0],
+    ['Розовые розы 51 шт', 'Пышный монобукет из нежно-розовых роз — для самых тёплых признаний.', 5900, 6800, 1, 'https://images.unsplash.com/photo-1591886960571-74d43a9d4166?w=700&q=85', 1, 1],
+    ['Пионы белые 7 шт', 'Пышные белые пионы с тонким ароматом. Сорт Duchesse de Nemours — классика флористики.', 2800, 3200, 2, 'https://images.unsplash.com/photo-1560717789-0ac7c58ac90a?w=700&q=85', 1, 1],
+    ['Пионы розовые 5 шт', 'Воздушные розовые пионы сорта Sarah Bernhardt в крафтовой упаковке. Нежный аромат.', 2200, null, 2, 'https://images.unsplash.com/photo-1533038590840-1cde6e668a91?w=700&q=85', 1, 0],
+    ['Тюльпаны 25 шт', 'Свежие весенние тюльпаны. Доступны белые, красные, жёлтые, розовые и лиловые — уточните цвет при заказе.', 1750, 2000, 3, 'https://images.unsplash.com/photo-1462275646964-a0e3386b89fa?w=700&q=85', 1, 0],
+    ['Тюльпаны красные 51 шт', 'Эффектный букет из 51 алого тюльпана — впечатляющий подарок к любому событию.', 3500, null, 3, 'https://images.unsplash.com/photo-1468327768560-75b778cbb551?w=700&q=85', 1, 1],
+    ['Букет «Нежность»', 'Пастельный букет из роз, пионов, эустомы и матиолы. Упакован в корейскую бумагу ручной работы.', 4500, 5200, 4, 'https://images.unsplash.com/photo-1596438459194-f275f413d6ff?w=700&q=85', 1, 1],
+    ['Букет «Романтика»', 'Роскошный авторский букет из красных роз, пионов и зелени эвкалипта в премиум-оформлении.', 5800, 6500, 4, 'https://images.unsplash.com/photo-1525310072745-f49212b5ac6d?w=700&q=85', 1, 1],
+    ['Букет «Весна»', 'Яркий весенний микс из тюльпанов, ранункулюсов и анемонов. Живое настроение в букете.', 3200, null, 4, 'https://images.unsplash.com/photo-1568702846914-96b305d2aaeb?w=700&q=85', 1, 0],
+    ['Луговой микс', 'Нежный букет из ромашек, колокольчиков, васильков и злаков. Деревенский шарм и натуральная красота.', 1800, null, 5, 'https://images.unsplash.com/photo-1444930694458-01babf71870c?w=700&q=85', 1, 0],
+    ['Лаванда 7 веток', 'Свежие ветки настоящей прованской лаванды. Наполнит дом нежным ароматом и уютом.', 1400, null, 5, 'https://images.unsplash.com/photo-1499002238440-d264edd596ec?w=700&q=85', 1, 0],
+  ];
+
+  const insert = db.prepare(`
     INSERT INTO products (name, description, price, old_price, category_id, image_url, in_stock, is_featured)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?)
   `);
 
-  const seed = db.transaction(() => {
-    db.prepare('INSERT INTO categories (name, slug, description) VALUES (?, ?, ?)').run(
-      'Розы', 'rozy', 'Классические розы всех сортов и оттенков'
-    );
-    db.prepare('INSERT INTO categories (name, slug, description) VALUES (?, ?, ?)').run(
-      'Пионы', 'piony', 'Нежные и пышные пионы'
-    );
-    db.prepare('INSERT INTO categories (name, slug, description) VALUES (?, ?, ?)').run(
-      'Тюльпаны', 'tyulpany', 'Весенние тюльпаны разных цветов'
-    );
-    db.prepare('INSERT INTO categories (name, slug, description) VALUES (?, ?, ?)').run(
-      'Букеты', 'bukety', 'Готовые букеты для любого повода'
-    );
-    db.prepare('INSERT INTO categories (name, slug, description) VALUES (?, ?, ?)').run(
-      'Полевые цветы', 'polevye', 'Нежные полевые цветы и луговые миксы'
-    );
-
-    ins.run('Красные розы 25 шт',
-      'Классические алые розы премиум-сорта Ред Наоми. Длина стебля 60 см, крупный бутон. Символ страсти и любви.',
-      2900, 3400, 1, 'https://images.unsplash.com/photo-1519378058457-4c29a0a2efac?w=700&q=85', 1, 1);
-    ins.run('Белые розы 15 шт',
-      'Нежные белые розы сорта Аваланш. Безупречная форма бутона, стоят до 10 дней в вазе.',
-      1950, null, 1, 'https://images.unsplash.com/photo-1508610048659-a06b669e3321?w=700&q=85', 1, 0);
-    ins.run('Розовые розы 51 шт',
-      'Пышный монобукет из нежно-розовых роз — для самых тёплых признаний.',
-      5900, 6800, 1, 'https://images.unsplash.com/photo-1591886960571-74d43a9d4166?w=700&q=85', 1, 1);
-    ins.run('Пионы белые 7 шт',
-      'Пышные белые пионы с тонким ароматом. Сорт Duchesse de Nemours — классика флористики.',
-      2800, 3200, 2, 'https://images.unsplash.com/photo-1560717789-0ac7c58ac90a?w=700&q=85', 1, 1);
-    ins.run('Пионы розовые 5 шт',
-      'Воздушные розовые пионы сорта Sarah Bernhardt в крафтовой упаковке. Нежный аромат.',
-      2200, null, 2, 'https://images.unsplash.com/photo-1533038590840-1cde6e668a91?w=700&q=85', 1, 0);
-    ins.run('Тюльпаны 25 шт',
-      'Свежие весенние тюльпаны. Доступны белые, красные, жёлтые, розовые и лиловые — уточните цвет при заказе.',
-      1750, 2000, 3, 'https://images.unsplash.com/photo-1462275646964-a0e3386b89fa?w=700&q=85', 1, 0);
-    ins.run('Тюльпаны красные 51 шт',
-      'Эффектный букет из 51 алого тюльпана — впечатляющий подарок к любому событию.',
-      3500, null, 3, 'https://images.unsplash.com/photo-1468327768560-75b778cbb551?w=700&q=85', 1, 1);
-    ins.run('Букет «Нежность»',
-      'Пастельный букет из роз, пионов, эустомы и матиолы. Упакован в корейскую бумагу ручной работы.',
-      4500, 5200, 4, 'https://images.unsplash.com/photo-1596438459194-f275f413d6ff?w=700&q=85', 1, 1);
-    ins.run('Букет «Романтика»',
-      'Роскошный авторский букет из красных роз, пионов и зелени эвкалипта в премиум-оформлении.',
-      5800, 6500, 4, 'https://images.unsplash.com/photo-1525310072745-f49212b5ac6d?w=700&q=85', 1, 1);
-    ins.run('Букет «Весна»',
-      'Яркий весенний микс из тюльпанов, ранункулюсов и анемонов. Живое настроение в букете.',
-      3200, null, 4, 'https://images.unsplash.com/photo-1568702846914-96b305d2aaeb?w=700&q=85', 1, 0);
-    ins.run('Луговой микс',
-      'Нежный букет из ромашек, колокольчиков, васильков и злаков. Деревенский шарм и натуральная красота.',
-      1800, null, 5, 'https://images.unsplash.com/photo-1444930694458-01babf71870c?w=700&q=85', 1, 0);
-    ins.run('Лаванда 7 веток',
-      'Свежие ветки настоящей прованской лаванды. Наполнит дом нежным ароматом и уютом.',
-      1400, null, 5, 'https://images.unsplash.com/photo-1499002238440-d264edd596ec?w=700&q=85', 1, 0);
-  });
-
-  seed();
+  for (const product of products) {
+    await insert.run(...product);
+  }
 }

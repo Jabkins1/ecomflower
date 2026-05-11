@@ -13,7 +13,7 @@ export default function CartPage() {
         <div className="text-7xl mb-6">🛍️</div>
         <h1 className="text-2xl font-bold text-gray-900 mb-4">Корзина пуста</h1>
         <p className="text-gray-500 mb-8">Добавьте понравившиеся цветы из каталога</p>
-        <Link href="/catalog" className="bg-rose-500 hover:bg-rose-600 text-white px-8 py-3.5 rounded-full font-semibold transition-colors inline-flex items-center gap-2">
+        <Link href="/catalog" className="bg-green-500 hover:bg-green-600 text-white px-8 py-3.5 rounded-full font-semibold transition-colors inline-flex items-center gap-2">
           <ShoppingBag size={18} /> Перейти в каталог
         </Link>
       </div>
@@ -37,25 +37,25 @@ export default function CartPage() {
               </Link>
 
               <div className="flex-1 min-w-0">
-                <Link href={`/catalog/${product.id}`} className="font-medium text-gray-800 hover:text-rose-600 transition-colors text-sm block mb-1 line-clamp-2">
+                <Link href={`/catalog/${product.id}`} className="font-medium text-gray-800 hover:text-green-600 transition-colors text-sm block mb-1 line-clamp-2">
                   {product.name}
                 </Link>
                 {product.category_name && (
-                  <p className="text-rose-400 text-xs mb-3">{product.category_name}</p>
+                  <p className="text-green-400 text-xs mb-3">{product.category_name}</p>
                 )}
 
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <button
                       onClick={() => updateQuantity(product.id, quantity - 1)}
-                      className="w-8 h-8 rounded-lg bg-gray-100 hover:bg-rose-100 hover:text-rose-600 flex items-center justify-center transition-colors"
+                      className="w-8 h-8 rounded-lg bg-gray-100 hover:bg-green-100 hover:text-green-600 flex items-center justify-center transition-colors"
                     >
                       <Minus size={14} />
                     </button>
                     <span className="w-8 text-center font-semibold text-sm">{quantity}</span>
                     <button
                       onClick={() => updateQuantity(product.id, quantity + 1)}
-                      className="w-8 h-8 rounded-lg bg-gray-100 hover:bg-rose-100 hover:text-rose-600 flex items-center justify-center transition-colors"
+                      className="w-8 h-8 rounded-lg bg-gray-100 hover:bg-green-100 hover:text-green-600 flex items-center justify-center transition-colors"
                     >
                       <Plus size={14} />
                     </button>
@@ -100,11 +100,11 @@ export default function CartPage() {
               <p className="text-gray-400 text-xs mt-1">Доставка рассчитывается при оформлении</p>
             </div>
 
-            <Link href="/checkout" className="w-full bg-rose-500 hover:bg-rose-600 text-white py-4 rounded-xl font-semibold transition-colors flex items-center justify-center gap-2">
+            <Link href="/checkout" className="w-full bg-green-500 hover:bg-green-600 text-white py-4 rounded-xl font-semibold transition-colors flex items-center justify-center gap-2">
               Оформить заказ <ArrowRight size={18} />
             </Link>
 
-            <Link href="/catalog" className="w-full mt-3 border border-gray-200 hover:border-rose-300 text-gray-600 py-3 rounded-xl text-sm font-medium transition-colors flex items-center justify-center">
+            <Link href="/catalog" className="w-full mt-3 border border-gray-200 hover:border-green-300 text-gray-600 py-3 rounded-xl text-sm font-medium transition-colors flex items-center justify-center">
               Продолжить покупки
             </Link>
           </div>

@@ -72,7 +72,7 @@ export default function CheckoutPage() {
             Мы свяжемся с вами в ближайшее время для подтверждения. Спасибо за покупку! 🌸
           </p>
           <div className="flex flex-col gap-3">
-            <Link href="/catalog" className="bg-rose-500 hover:bg-rose-600 text-white py-3.5 rounded-xl font-semibold transition-colors">
+            <Link href="/catalog" className="bg-green-500 hover:bg-green-600 text-white py-3.5 rounded-xl font-semibold transition-colors">
               Продолжить покупки
             </Link>
             <Link href="/" className="border border-gray-200 text-gray-600 py-3 rounded-xl text-sm font-medium hover:bg-gray-50 transition-colors">
@@ -89,7 +89,7 @@ export default function CheckoutPage() {
       <div className="max-w-lg mx-auto px-4 py-20 text-center">
         <div className="text-6xl mb-4">🛒</div>
         <h1 className="text-2xl font-bold text-gray-900 mb-4">Корзина пуста</h1>
-        <Link href="/catalog" className="bg-rose-500 text-white px-6 py-3 rounded-xl font-semibold">
+        <Link href="/catalog" className="bg-green-500 text-white px-6 py-3 rounded-xl font-semibold">
           Перейти в каталог
         </Link>
       </div>
@@ -100,7 +100,7 @@ export default function CheckoutPage() {
 
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 py-10">
-      <Link href="/cart" className="inline-flex items-center gap-2 text-gray-500 hover:text-rose-600 text-sm mb-6 transition-colors">
+      <Link href="/cart" className="inline-flex items-center gap-2 text-gray-500 hover:text-green-600 text-sm mb-6 transition-colors">
         <ArrowLeft size={16} /> Назад в корзину
       </Link>
       <h1 className="text-3xl font-bold text-gray-900 mb-8">Оформление заказа</h1>
@@ -120,7 +120,7 @@ export default function CheckoutPage() {
                   onChange={handleChange}
                   required
                   placeholder="Иван Иванов"
-                  className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-rose-400 transition-colors"
+                  className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-green-400 transition-colors"
                 />
               </div>
               <div>
@@ -132,7 +132,7 @@ export default function CheckoutPage() {
                   onChange={handleChange}
                   required
                   placeholder="+7 (999) 123-45-67"
-                  className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-rose-400 transition-colors"
+                  className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-green-400 transition-colors"
                 />
               </div>
               <div className="sm:col-span-2">
@@ -143,7 +143,7 @@ export default function CheckoutPage() {
                   value={form.email}
                   onChange={handleChange}
                   placeholder="ivan@example.com"
-                  className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-rose-400 transition-colors"
+                  className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-green-400 transition-colors"
                 />
               </div>
             </div>
@@ -161,7 +161,7 @@ export default function CheckoutPage() {
                   value={form.delivery_date}
                   onChange={handleChange}
                   min={today}
-                  className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-rose-400 transition-colors"
+                  className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-green-400 transition-colors"
                 />
               </div>
               <div>
@@ -170,7 +170,7 @@ export default function CheckoutPage() {
                   name="delivery_time"
                   value={form.delivery_time}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-rose-400 transition-colors"
+                  className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-green-400 transition-colors"
                 >
                   <option value="">Не важно</option>
                   <option value="09:00-12:00">09:00 – 12:00</option>
@@ -187,7 +187,7 @@ export default function CheckoutPage() {
                   value={form.delivery_address}
                   onChange={handleChange}
                   placeholder="ул. Ленина, 5, кв. 12 (или «Самовывоз»)"
-                  className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-rose-400 transition-colors"
+                  className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-green-400 transition-colors"
                 />
               </div>
             </div>
@@ -202,7 +202,7 @@ export default function CheckoutPage() {
               onChange={handleChange}
               rows={3}
               placeholder="Пожелания по букету, открытка, поздравление и т.д."
-              className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-rose-400 transition-colors resize-none"
+              className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-green-400 transition-colors resize-none"
             />
           </div>
 
@@ -215,7 +215,7 @@ export default function CheckoutPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-rose-500 hover:bg-rose-600 disabled:bg-gray-300 text-white py-4 rounded-xl font-bold text-lg transition-colors"
+            className="w-full bg-green-500 hover:bg-green-600 disabled:bg-gray-300 text-white py-4 rounded-xl font-bold text-lg transition-colors"
           >
             {loading ? 'Оформляем...' : 'Подтвердить заказ'}
           </button>
@@ -225,7 +225,7 @@ export default function CheckoutPage() {
         <div className="lg:col-span-1">
           <div className="bg-white rounded-2xl p-6 shadow-sm sticky top-24">
             <h2 className="font-bold text-gray-900 text-lg mb-5 flex items-center gap-2">
-              <Package size={18} className="text-rose-400" /> Ваш заказ
+              <Package size={18} className="text-green-400" /> Ваш заказ
             </h2>
             <div className="space-y-4 mb-5">
               {items.map(({ product, quantity }) => (

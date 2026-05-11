@@ -48,3 +48,21 @@ export interface CartItem {
   product: Product;
   quantity: number;
 }
+
+export interface Customer {
+  id: number;
+  name: string;
+  email: string;
+  phone?: string;
+  created_at: string;
+}
+
+export interface Review {
+  id: number;
+  customer_id: number;
+  customer_name: string;
+  rating: number;
+  text: string;
+  is_approved: number;
+  created_at: string;
+}

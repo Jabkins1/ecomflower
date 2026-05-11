@@ -99,7 +99,7 @@ export default function AdminCategoriesPage() {
         </div>
         <button
           onClick={openAdd}
-          className="bg-rose-500 hover:bg-rose-600 text-white px-4 py-2.5 rounded-xl text-sm font-semibold flex items-center gap-2 transition-colors"
+          className="bg-green-500 hover:bg-green-600 text-white px-4 py-2.5 rounded-xl text-sm font-semibold flex items-center gap-2 transition-colors"
         >
           <Plus size={16} /> Добавить категорию
         </button>
@@ -124,7 +124,7 @@ export default function AdminCategoriesPage() {
                 <input
                   value={form.name}
                   onChange={e => handleNameChange(e.target.value)}
-                  className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-rose-400"
+                  className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-green-400"
                   placeholder="Например: Орхидеи"
                 />
               </div>
@@ -138,7 +138,7 @@ export default function AdminCategoriesPage() {
                   <input
                     value={form.slug}
                     onChange={e => setForm(p => ({ ...p, slug: e.target.value }))}
-                    className="flex-1 px-3 py-2.5 border border-gray-200 rounded-xl text-sm font-mono focus:outline-none focus:border-rose-400"
+                    className="flex-1 px-3 py-2.5 border border-gray-200 rounded-xl text-sm font-mono focus:outline-none focus:border-green-400"
                     placeholder="orkhidei"
                   />
                 </div>
@@ -150,7 +150,7 @@ export default function AdminCategoriesPage() {
                   value={form.description}
                   onChange={e => setForm(p => ({ ...p, description: e.target.value }))}
                   rows={2}
-                  className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-rose-400 resize-none"
+                  className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-green-400 resize-none"
                   placeholder="Краткое описание категории"
                 />
               </div>
@@ -166,7 +166,7 @@ export default function AdminCategoriesPage() {
               <button
                 onClick={handleSave}
                 disabled={saving}
-                className="flex-1 bg-rose-500 hover:bg-rose-600 disabled:bg-gray-300 text-white py-2.5 rounded-xl font-semibold text-sm flex items-center justify-center gap-2 transition-colors"
+                className="flex-1 bg-green-500 hover:bg-green-600 disabled:bg-gray-300 text-white py-2.5 rounded-xl font-semibold text-sm flex items-center justify-center gap-2 transition-colors"
               >
                 <Check size={16} /> {saving ? 'Сохраняем...' : 'Сохранить'}
               </button>
@@ -201,8 +201,8 @@ export default function AdminCategoriesPage() {
                 <tr key={cat.id} className="hover:bg-gray-50 transition-colors">
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-2">
-                      <div className="bg-rose-100 p-1.5 rounded-lg">
-                        <Tag size={13} className="text-rose-500" />
+                      <div className="bg-green-100 p-1.5 rounded-lg">
+                        <Tag size={13} className="text-green-500" />
                       </div>
                       <span className="font-medium text-gray-800">{cat.name}</span>
                     </div>
@@ -222,7 +222,7 @@ export default function AdminCategoriesPage() {
                     <div className="flex gap-1 justify-end">
                       <button
                         onClick={() => openEdit(cat)}
-                        className="p-1.5 text-gray-400 hover:text-rose-500 hover:bg-rose-50 rounded-lg transition-colors"
+                        className="p-1.5 text-gray-400 hover:text-green-500 hover:bg-green-50 rounded-lg transition-colors"
                         title="Редактировать"
                       >
                         <Pencil size={15} />

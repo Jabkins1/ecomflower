@@ -98,7 +98,7 @@ export default function SqlConsolePage() {
         <div className="p-3 border-t border-gray-800">
           <button
             onClick={() => setActiveTab('console')}
-            className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-medium transition-colors ${activeTab === 'console' ? 'bg-rose-600 text-white' : 'text-gray-400 hover:bg-gray-800 hover:text-white'}`}
+            className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-medium transition-colors ${activeTab === 'console' ? 'bg-green-600 text-white' : 'text-gray-400 hover:bg-gray-800 hover:text-white'}`}
           >
             <Play size={13} /> SQL Консоль
           </button>
@@ -124,7 +124,7 @@ export default function SqlConsolePage() {
                 {tableCols.map(col => (
                   <span key={col.name} className="bg-gray-100 text-gray-600 text-xs px-2 py-0.5 rounded-md font-mono">
                     {col.name} <span className="text-gray-400">{col.type}</span>
-                    {col.pk ? <span className="text-rose-500 ml-1">PK</span> : null}
+                    {col.pk ? <span className="text-green-500 ml-1">PK</span> : null}
                     {col.notnull ? <span className="text-orange-400 ml-1">NOT NULL</span> : null}
                   </span>
                 ))}
@@ -171,7 +171,7 @@ export default function SqlConsolePage() {
                 <button
                   key={label}
                   onClick={() => setQuery(sql)}
-                  className="flex items-center gap-1 px-3 py-1.5 bg-gray-100 hover:bg-rose-50 hover:text-rose-600 text-gray-600 rounded-lg text-xs font-medium transition-colors"
+                  className="flex items-center gap-1 px-3 py-1.5 bg-gray-100 hover:bg-green-50 hover:text-green-600 text-gray-600 rounded-lg text-xs font-medium transition-colors"
                 >
                   <ChevronRight size={12} /> {label}
                 </button>
@@ -183,7 +183,7 @@ export default function SqlConsolePage() {
                 value={query}
                 onChange={e => setQuery(e.target.value)}
                 rows={6}
-                className="w-full bg-gray-800 text-green-400 font-mono text-sm px-4 py-3 rounded-xl resize-none focus:outline-none focus:ring-2 focus:ring-rose-500/50 border border-gray-700"
+                className="w-full bg-gray-800 text-green-400 font-mono text-sm px-4 py-3 rounded-xl resize-none focus:outline-none focus:ring-2 focus:ring-green-500/50 border border-gray-700"
                 placeholder="Введите SQL запрос..."
                 onKeyDown={e => { if (e.ctrlKey && e.key === 'Enter') runQuery(); }}
               />
@@ -192,7 +192,7 @@ export default function SqlConsolePage() {
                 <button
                   onClick={runQuery}
                   disabled={running || !query.trim()}
-                  className="flex items-center gap-2 bg-rose-500 hover:bg-rose-600 disabled:bg-gray-600 text-white px-5 py-2 rounded-xl text-sm font-semibold transition-colors"
+                  className="flex items-center gap-2 bg-green-500 hover:bg-green-600 disabled:bg-gray-600 text-white px-5 py-2 rounded-xl text-sm font-semibold transition-colors"
                 >
                   <Play size={14} /> {running ? 'Выполняем...' : 'Выполнить'}
                 </button>

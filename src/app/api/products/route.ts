@@ -30,8 +30,8 @@ export async function GET(request: NextRequest) {
     }
     query += ' ORDER BY p.created_at DESC';
 
-    const products = db.prepare(query).all(...params);
-    const categories = db.prepare('SELECT * FROM categories ORDER BY name').all();
+    const products = await db.prepare(query).all(...params);
+    const categories = await db.prepare('SELECT * FROM categories ORDER BY name').all();
 
     return NextResponse.json({ products, categories });
   } catch (error) {

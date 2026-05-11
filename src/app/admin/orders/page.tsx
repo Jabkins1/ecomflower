@@ -101,7 +101,7 @@ export default function AdminOrdersPage() {
                     <td className="px-4 py-3 font-medium text-gray-900">#{order.id}</td>
                     <td className="px-4 py-3 text-gray-700">{order.customer_name}</td>
                     <td className="px-4 py-3 text-gray-500">
-                      <a href={`tel:${order.phone}`} className="hover:text-rose-500" onClick={e => e.stopPropagation()}>{order.phone}</a>
+                      <a href={`tel:${order.phone}`} className="hover:text-green-500" onClick={e => e.stopPropagation()}>{order.phone}</a>
                     </td>
                     <td className="px-4 py-3 text-gray-500">
                       {order.delivery_date ? `${order.delivery_date}${order.delivery_time ? ' ' + order.delivery_time : ''}` : '—'}

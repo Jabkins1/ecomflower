@@ -57,7 +57,7 @@ function CatalogContent() {
             <div className="space-y-1">
               <button
                 onClick={() => setCategory('')}
-                className={`w-full text-left px-3 py-2 rounded-xl text-sm transition-colors ${!activeCategory ? 'bg-rose-50 text-rose-600 font-medium' : 'text-gray-600 hover:bg-gray-50'}`}
+                className={`w-full text-left px-3 py-2 rounded-xl text-sm transition-colors ${!activeCategory ? 'bg-green-50 text-green-600 font-medium' : 'text-gray-600 hover:bg-gray-50'}`}
               >
                 Все цветы
               </button>
@@ -65,7 +65,7 @@ function CatalogContent() {
                 <button
                   key={cat.id}
                   onClick={() => setCategory(cat.slug)}
-                  className={`w-full text-left px-3 py-2 rounded-xl text-sm transition-colors ${activeCategory === cat.slug ? 'bg-rose-50 text-rose-600 font-medium' : 'text-gray-600 hover:bg-gray-50'}`}
+                  className={`w-full text-left px-3 py-2 rounded-xl text-sm transition-colors ${activeCategory === cat.slug ? 'bg-green-50 text-green-600 font-medium' : 'text-gray-600 hover:bg-gray-50'}`}
                 >
                   {cat.name}
                 </button>
@@ -83,7 +83,7 @@ function CatalogContent() {
               placeholder="Поиск по названию..."
               value={search}
               onChange={e => setSearch(e.target.value)}
-              className="w-full pl-11 pr-4 py-3 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-rose-400 transition-colors"
+              className="w-full pl-11 pr-4 py-3 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-green-400 transition-colors"
             />
           </div>
 

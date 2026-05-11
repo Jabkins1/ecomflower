@@ -5,10 +5,9 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
   try {
     const { id } = await params;
     const db = await getDb();
-    await db.prepare('DELETE FROM order_items WHERE order_id = ?').run(id);
-    await db.prepare('DELETE FROM orders WHERE id = ?').run(id);
+    await db.prepare('DELETE FROM reviews WHERE id = ?').run(id);
     return NextResponse.json({ success: true });
   } catch (error) {
-    return NextResponse.json({ error: 'Не удалось удалить заказ' }, { status: 500 });
+    return NextResponse.json({ error: 'Не удалось удалить отзыв' }, { status: 500 });
   }
 }
