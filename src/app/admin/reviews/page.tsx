@@ -5,12 +5,11 @@ import { Check, Trash2, X, Star } from 'lucide-react';
 
 interface AdminReview {
   id: number;
-  customer_id: number;
   customer_name: string;
-  email?: string;
   phone?: string;
   rating: number;
   text: string;
+  image_url?: string;
   is_approved: number;
   created_at: string;
 }
@@ -66,7 +65,7 @@ export default function AdminReviewsPage() {
                       {review.is_approved ? 'Одобрен' : 'На модерации'}
                     </span>
                   </div>
-                  <p className="text-xs text-gray-400">{review.email || 'без email'} {review.phone ? `· ${review.phone}` : ''}</p>
+                  <p className="text-xs text-gray-400">{review.phone || 'без телефона'}</p>
                   <p className="text-xs text-gray-400">{new Date(review.created_at).toLocaleString('ru-RU')}</p>
                 </div>
                 <div className="flex items-center gap-2">
@@ -85,6 +84,9 @@ export default function AdminReviewsPage() {
                 {[...Array(review.rating)].map((_, i) => <Star key={i} size={16} fill="currentColor" />)}
               </div>
               <p className="text-gray-600 leading-relaxed">{review.text}</p>
+              {review.image_url && (
+                <img src={review.image_url} alt="Фото" className="mt-3 rounded-xl max-h-48 object-cover" />
+              )}
             </div>
           ))}
         </div>

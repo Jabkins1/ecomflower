@@ -225,14 +225,23 @@ async function initializeDb(db: DbWrapper) {
     );
     CREATE TABLE IF NOT EXISTS reviews (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
-      customer_id INTEGER NOT NULL REFERENCES customers(id) ON DELETE CASCADE,
+      customer_id INTEGER REFERENCES customers(id) ON DELETE SET NULL,
       customer_name TEXT NOT NULL,
+      phone TEXT,
       rating INTEGER NOT NULL,
       text TEXT NOT NULL,
+      image_url TEXT,
       is_approved INTEGER DEFAULT 0,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     );
   `);
+
+  try {
+    await db.run("ALTER TABLE reviews ADD COLUMN image_url TEXT");
+  } catch { /* column already exists */ }
+  try {
+    await db.run("ALTER TABLE reviews ADD COLUMN phone TEXT");
+  } catch { /* column already exists */ }
 
   const row = await db.prepare('SELECT COUNT(*) as c FROM categories').get() as { c: number } | undefined;
   if (!row || Number(row.c) === 0) await seedData(db);

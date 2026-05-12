@@ -59,10 +59,12 @@ export interface Customer {
 
 export interface Review {
   id: number;
-  customer_id: number;
+  customer_id?: number;
   customer_name: string;
+  phone?: string;
   rating: number;
   text: string;
+  image_url?: string;
   is_approved: number;
   created_at: string;
 }

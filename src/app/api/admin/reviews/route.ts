@@ -5,10 +5,9 @@ export async function GET() {
   try {
     const db = await getDb();
     const reviews = await db.prepare(`
-      SELECT r.*, c.email, c.phone
-      FROM reviews r
-      LEFT JOIN customers c ON c.id = r.customer_id
-      ORDER BY r.created_at DESC
+      SELECT id, customer_name, phone, rating, text, image_url, is_approved, created_at
+      FROM reviews
+      ORDER BY created_at DESC
     `).all();
     return NextResponse.json(reviews);
   } catch (error) {
