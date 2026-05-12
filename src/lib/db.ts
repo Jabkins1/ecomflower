@@ -11,6 +11,7 @@ const DB_PATH = process.env.NODE_ENV === 'production'
 let sqlJs: SqlJsStatic | null = null;
 let remoteClient: Client | null = null;
 let localDbInstance: Database | null = null;
+let dbInitialized = false;
 
 type Row = Record<string, unknown>;
 type SqlVal = string | number | null | Uint8Array;
@@ -149,7 +150,10 @@ export async function getDb(): Promise<DbWrapper> {
       remoteClient = createClient({ url: tursoUrl, authToken: tursoToken });
     }
     const db = new DbWrapper(null, remoteClient);
-    await initializeDb(db);
+    if (!dbInitialized) {
+      await initializeDb(db);
+      dbInitialized = true;
+    }
     return db;
   }
 
@@ -167,9 +171,12 @@ export async function getDb(): Promise<DbWrapper> {
   }
 
   const db = new DbWrapper(localDbInstance, null);
-  await db.pragma('journal_mode = WAL');
-  await db.pragma('foreign_keys = ON');
-  await initializeDb(db);
+  if (!dbInitialized) {
+    await db.pragma('journal_mode = WAL');
+    await db.pragma('foreign_keys = ON');
+    await initializeDb(db);
+    dbInitialized = true;
+  }
   return db;
 }
 
