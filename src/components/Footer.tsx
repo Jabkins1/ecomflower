@@ -59,7 +59,7 @@ export default function Footer() {
         </div>
 
         <div className="border-t border-green-800 mt-8 pt-6 text-center text-green-300 text-xs">
-          © {new Date().getFullYear()} ZELENAYA. Все права защищены.
+          © {new Date().getFullYear()} ZELENAYA
         </div>
       </div>
     </footer>
