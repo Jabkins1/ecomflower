@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { getDb } from '@/lib/db';
-import { Product } from '@/lib/types';
+import { Product, Review } from '@/lib/types';
 import ProductCard from '@/components/ProductCard';
 import { ArrowRight, Truck, Clock, Star, Shield } from 'lucide-react';
 
@@ -16,6 +16,12 @@ export default async function HomePage() {
   `).all() as unknown as Product[];
 
   const categories = await db.prepare('SELECT * FROM categories ORDER BY name').all() as unknown as { id: number; name: string; slug: string }[];
+
+  const reviews = await db.prepare(`
+    SELECT id, customer_name, rating, text, created_at
+    FROM reviews WHERE is_approved = 1
+    ORDER BY created_at DESC LIMIT 4
+  `).all() as unknown as Review[];
 
   const categoryImages: Record<string, string> = {
     'rozy':     'https://images.unsplash.com/photo-1519378058457-4c29a0a2efac?w=500&q=85',
@@ -132,6 +138,37 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* Reviews */}
+      {reviews.length > 0 && (
+        <section className="py-14 max-w-7xl mx-auto px-4 sm:px-6">
+          <div className="flex items-end justify-between mb-8">
+            <div>
+              <p className="text-green-500 text-sm font-medium uppercase tracking-widest mb-1">Отзывы</p>
+              <h2 className="text-3xl font-bold text-gray-900">Что говорят клиенты</h2>
+            </div>
+            <Link href="/reviews" className="text-green-500 hover:text-green-700 text-sm font-medium flex items-center gap-1">
+              Все отзывы <ArrowRight size={15} />
+            </Link>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {reviews.map((review) => (
+              <div key={review.id} className="bg-white rounded-3xl p-6 shadow-sm flex flex-col">
+                <div className="flex text-amber-400 mb-3">
+                  {[...Array(review.rating)].map((_, i) => (
+                    <Star key={i} size={16} fill="currentColor" />
+                  ))}
+                </div>
+                <p className="text-gray-600 text-sm leading-relaxed line-clamp-3 flex-1">{review.text}</p>
+                <div className="mt-4 pt-3 border-t border-gray-100">
+                  <p className="font-semibold text-gray-900 text-sm">{review.customer_name}</p>
+                  <p className="text-xs text-gray-400">{new Date(review.created_at).toLocaleDateString('ru-RU')}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* CTA Banner */}
       <section className="py-16 max-w-7xl mx-auto px-4 sm:px-6">

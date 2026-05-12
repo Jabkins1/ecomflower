@@ -10,6 +10,7 @@ const DB_PATH = process.env.NODE_ENV === 'production'
 
 let sqlJs: SqlJsStatic | null = null;
 let remoteClient: Client | null = null;
+let localDbInstance: Database | null = null;
 
 type Row = Record<string, unknown>;
 type SqlVal = string | number | null | Uint8Array;
@@ -159,11 +160,13 @@ export async function getDb(): Promise<DbWrapper> {
     });
   }
 
-  const raw = fs.existsSync(DB_PATH)
-    ? new sqlJs.Database(fs.readFileSync(DB_PATH))
-    : new sqlJs.Database();
+  if (!localDbInstance) {
+    localDbInstance = fs.existsSync(DB_PATH)
+      ? new sqlJs.Database(fs.readFileSync(DB_PATH))
+      : new sqlJs.Database();
+  }
 
-  const db = new DbWrapper(raw, null);
+  const db = new DbWrapper(localDbInstance, null);
   await db.pragma('journal_mode = WAL');
   await db.pragma('foreign_keys = ON');
   await initializeDb(db);

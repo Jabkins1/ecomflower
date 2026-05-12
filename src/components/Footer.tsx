@@ -1,11 +1,11 @@
 import Link from 'next/link';
-import { Phone, Mail, MapPin, Clock } from 'lucide-react';
+import { Phone, MapPin, Clock, MessageCircle, Send } from 'lucide-react';
 
 export default function Footer() {
   return (
     <footer className="bg-green-900 text-green-100 mt-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div>
             <img src="/logo-zelenaya.svg" alt="ZELENAYA" className="h-16 w-auto mb-4 brightness-0 invert" />
             <p className="text-green-200 text-sm leading-relaxed">
@@ -20,6 +20,7 @@ export default function Footer() {
               <li><Link href="/about" className="text-green-200 hover:text-white transition-colors">О компании</Link></li>
               <li><Link href="/order-terms" className="text-green-200 hover:text-white transition-colors">Условия заказа</Link></li>
               <li><Link href="/reviews" className="text-green-200 hover:text-white transition-colors">Отзывы</Link></li>
+              <li><Link href="/contacts" className="text-green-200 hover:text-white transition-colors">Контакты</Link></li>
               <li><Link href="/cart" className="text-green-200 hover:text-white transition-colors">Корзина</Link></li>
             </ul>
           </div>
@@ -29,19 +30,29 @@ export default function Footer() {
             <ul className="space-y-3 text-sm">
               <li className="flex items-center gap-2 text-green-200">
                 <Phone size={15} />
-                <a href="tel:+79991234567" className="hover:text-white transition-colors">+7 (999) 123-45-67</a>
+                <a href="tel:+79014395500" className="hover:text-white transition-colors">+7 (901) 439-55-00</a>
               </li>
               <li className="flex items-center gap-2 text-green-200">
-                <Mail size={15} />
-                <a href="mailto:hello@zelenaya.ru" className="hover:text-white transition-colors">hello@zelenaya.ru</a>
+                <MessageCircle size={15} />
+                <a href="https://wa.me/79014395500" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">WhatsApp</a>
+              </li>
+              <li className="flex items-center gap-2 text-green-200">
+                <Send size={15} />
+                <a href="https://t.me/ZelenayaCveti" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">Telegram</a>
               </li>
               <li className="flex items-start gap-2 text-green-200">
                 <MapPin size={15} className="mt-0.5 shrink-0" />
-                <span>г. Екатеринбург, ул. Цветочная, 12</span>
+                <span>г. Екатеринбург, ул. Машинная, 1В/2</span>
               </li>
-              <li className="flex items-center gap-2 text-green-200">
-                <Clock size={15} />
-                <span>Пн–Вс: 8:00–22:00</span>
+            </ul>
+          </div>
+
+          <div>
+            <h3 className="text-white font-semibold mb-4">Режим работы</h3>
+            <ul className="space-y-2 text-sm text-green-200">
+              <li className="flex items-center gap-2">
+                <Clock size={15} className="shrink-0" />
+                <span>Ежедневно: 10:00–21:00</span>
               </li>
             </ul>
           </div>

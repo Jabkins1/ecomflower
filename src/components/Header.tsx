@@ -30,12 +30,15 @@ export default function Header() {
             <Link href="/reviews" className="text-gray-600 hover:text-green-600 transition-colors text-sm font-medium">
               Отзывы
             </Link>
+            <Link href="/contacts" className="text-gray-600 hover:text-green-600 transition-colors text-sm font-medium">
+              Контакты
+            </Link>
           </nav>
 
           <div className="flex items-center gap-4">
-            <a href="tel:+79991234567" className="hidden md:flex items-center gap-1.5 text-sm text-gray-600 hover:text-green-600 transition-colors">
+            <a href="tel:+79014395500" className="hidden md:flex items-center gap-1.5 text-sm text-gray-600 hover:text-green-600 transition-colors">
               <Phone size={16} />
-              <span>+7 (999) 123-45-67</span>
+              <span>+7 (901) 439-55-00</span>
             </a>
 
             <Link href="/cart" className="relative p-2 text-gray-600 hover:text-green-600 transition-colors">
@@ -62,8 +65,9 @@ export default function Header() {
             <Link href="/about" className="block py-2 text-gray-700 hover:text-green-600 font-medium" onClick={() => setMenuOpen(false)}>О компании</Link>
             <Link href="/order-terms" className="block py-2 text-gray-700 hover:text-green-600 font-medium" onClick={() => setMenuOpen(false)}>Условия заказа</Link>
             <Link href="/reviews" className="block py-2 text-gray-700 hover:text-green-600 font-medium" onClick={() => setMenuOpen(false)}>Отзывы</Link>
-            <a href="tel:+79991234567" className="flex items-center gap-2 py-2 text-gray-700">
-              <Phone size={16} /> +7 (999) 123-45-67
+            <Link href="/contacts" className="block py-2 text-gray-700 hover:text-green-600 font-medium" onClick={() => setMenuOpen(false)}>Контакты</Link>
+            <a href="tel:+79014395500" className="flex items-center gap-2 py-2 text-gray-700">
+              <Phone size={16} /> +7 (901) 439-55-00
             </a>
           </div>
         )}
