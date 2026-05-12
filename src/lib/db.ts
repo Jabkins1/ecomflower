@@ -1,16 +1,14 @@
-﻿import initSqlJs from 'sql.js';
+﻿import { Pool } from '@neondatabase/serverless';
+import initSqlJs from 'sql.js';
 import type { Database, SqlJsStatic } from 'sql.js';
-import { createClient, type Client } from '@libsql/client';
 import fs from 'fs';
 import path from 'path';
 
-const DB_PATH = process.env.NODE_ENV === 'production'
-  ? '/tmp/flower_shop.db'
-  : path.join(process.cwd(), 'flower_shop.db');
+const DB_PATH = path.join(process.cwd(), 'flower_shop.db');
 
 let sqlJs: SqlJsStatic | null = null;
-let remoteClient: Client | null = null;
 let localDbInstance: Database | null = null;
+let pgPool: Pool | null = null;
 let dbInitialized = false;
 
 type Row = Record<string, unknown>;
@@ -21,16 +19,21 @@ function flatParams(params: unknown[]): unknown[] {
   return params.length === 1 && Array.isArray(params[0]) ? params[0] : params;
 }
 
-function normalizeValue(value: unknown): unknown {
-  return typeof value === 'bigint' ? Number(value) : value;
-}
-
-function normalizeRow(row: Record<string, unknown>): Row {
-  return Object.fromEntries(Object.entries(row).map(([key, value]) => [key, normalizeValue(value)]));
-}
-
 function splitSql(sql: string): string[] {
   return sql.split(';').map((part) => part.trim()).filter(Boolean);
+}
+
+function sqliteToPostgres(sql: string): string {
+  return sql
+    .replace(/INTEGER PRIMARY KEY AUTOINCREMENT/gi, 'SERIAL PRIMARY KEY')
+    .replace(/DATETIME DEFAULT CURRENT_TIMESTAMP/gi, 'TIMESTAMP DEFAULT NOW()')
+    .replace(/\bREAL\b/gi, 'NUMERIC');
+}
+
+function convertParams(sql: string, params: unknown[]): { sql: string; params: unknown[] } {
+  let idx = 0;
+  const pgSql = sql.replace(/\?/g, () => `$${++idx}`);
+  return { sql: pgSql, params };
 }
 
 class StatementWrapper {
@@ -55,7 +58,7 @@ class StatementWrapper {
 export class DbWrapper {
   constructor(
     private localDb: Database | null,
-    private client: Client | null
+    private pgUrl: string | null
   ) {}
 
   prepare(sql: string): StatementWrapper {
@@ -63,9 +66,11 @@ export class DbWrapper {
   }
 
   async all(sql: string, params: unknown[] = []): Promise<Row[]> {
-    if (this.client) {
-      const result = await this.client.execute({ sql, args: params as never[] });
-      return result.rows.map((row) => normalizeRow(row as Record<string, unknown>));
+    if (this.pgUrl) {
+      if (!pgPool) pgPool = new Pool({ connectionString: this.pgUrl });
+      const { sql: pgSql, params: pgParams } = convertParams(sql, params);
+      const result = await pgPool.query(pgSql, pgParams as never[]);
+      return result.rows as Row[];
     }
 
     if (!this.localDb) return [];
@@ -84,12 +89,12 @@ export class DbWrapper {
   }
 
   async run(sql: string, params: unknown[] = []): Promise<RunResult> {
-    if (this.client) {
-      const result = await this.client.execute({ sql, args: params as never[] });
-      return {
-        changes: Number(result.rowsAffected ?? 0),
-        lastInsertRowid: Number(result.lastInsertRowid ?? 0),
-      };
+    if (this.pgUrl) {
+      if (!pgPool) pgPool = new Pool({ connectionString: this.pgUrl });
+      const { sql: pgSql, params: pgParams } = convertParams(sql, params);
+      const result = await pgPool.query(pgSql + ' RETURNING id', pgParams as never[]);
+      const lastId = result.rows?.[0]?.id ?? 0;
+      return { changes: result.rowCount ?? 0, lastInsertRowid: Number(lastId) };
     }
 
     if (!this.localDb) return { changes: 0, lastInsertRowid: 0 };
@@ -107,30 +112,33 @@ export class DbWrapper {
   }
 
   async exec(sql: string): Promise<void> {
-    for (const statement of splitSql(sql)) {
-      if (this.client) {
-        await this.client.execute(statement);
-      } else {
-        this.localDb?.exec(statement);
+    if (this.pgUrl) {
+      if (!pgPool) pgPool = new Pool({ connectionString: this.pgUrl });
+      for (const statement of splitSql(sql)) {
+        await pgPool.query(sqliteToPostgres(statement));
       }
+      return;
+    }
+    for (const statement of splitSql(sql)) {
+      this.localDb?.exec(statement);
     }
     this.persist();
   }
 
   async pragma(setting: string): Promise<void> {
-    if (this.client) return;
+    if (this.pgUrl) return;
     this.localDb?.run(`PRAGMA ${setting}`);
   }
 
   async execQuery(sql: string): Promise<{ columns: string[]; values: unknown[][] }[]> {
-    if (this.client) {
-      const result = await this.client.execute(sql);
-      return [{
-        columns: result.columns as string[],
-        values: result.rows.map((row) => result.columns.map((column) => normalizeValue((row as Record<string, unknown>)[column]))),
-      }];
+    if (this.pgUrl) {
+      if (!pgPool) pgPool = new Pool({ connectionString: this.pgUrl });
+      const result = await pgPool.query(sql);
+      if (!result.rows.length) return [{ columns: [], values: [] }];
+      const columns = result.fields.map(f => f.name);
+      const values = result.rows.map((r: Record<string, unknown>) => columns.map(c => r[c]));
+      return [{ columns, values }];
     }
-
     return (this.localDb?.exec(sql) ?? []) as { columns: string[]; values: unknown[][] }[];
   }
 
@@ -142,14 +150,10 @@ export class DbWrapper {
 }
 
 export async function getDb(): Promise<DbWrapper> {
-  const tursoUrl = process.env.TURSO_DATABASE_URL;
-  const tursoToken = process.env.TURSO_AUTH_TOKEN;
+  const pgUrl = process.env.POSTGRES_URL || process.env.DATABASE_URL;
 
-  if (tursoUrl) {
-    if (!remoteClient) {
-      remoteClient = createClient({ url: tursoUrl, authToken: tursoToken });
-    }
-    const db = new DbWrapper(null, remoteClient);
+  if (pgUrl) {
+    const db = new DbWrapper(null, pgUrl);
     if (!dbInitialized) {
       await initializeDb(db);
       dbInitialized = true;
@@ -242,13 +246,6 @@ async function initializeDb(db: DbWrapper) {
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     );
   `);
-
-  try {
-    await db.run("ALTER TABLE reviews ADD COLUMN image_url TEXT");
-  } catch { /* column already exists */ }
-  try {
-    await db.run("ALTER TABLE reviews ADD COLUMN phone TEXT");
-  } catch { /* column already exists */ }
 
   const row = await db.prepare('SELECT COUNT(*) as c FROM categories').get() as { c: number } | undefined;
   if (!row || Number(row.c) === 0) await seedData(db);

@@ -5,10 +5,13 @@ export const dynamic = 'force-dynamic';
 
 export async function GET() {
   const env = process.env;
-  const tursoUrl = env['TURSO_DATABASE_URL'];
-  const tursoToken = env['TURSO_AUTH_TOKEN'];
+  const pgUrl = env['POSTGRES_URL'] || env['DATABASE_URL'];
 
-  const allEnvKeys = Object.keys(env).filter(k => k.toUpperCase().includes('TURSO'));
+  const allEnvKeys = Object.keys(env).filter(k => 
+    k.toUpperCase().includes('POSTGRES') || 
+    k.toUpperCase().includes('DATABASE') ||
+    k.toUpperCase().includes('TURSO')
+  );
   const sampleKeys = Object.keys(env).slice(0, 10);
 
   let dbInfo = null;
@@ -27,13 +30,12 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    version: 'v3',
-    mode: tursoUrl ? 'TURSO (cloud)' : 'LOCAL (file)',
-    tursoUrlSet: !!tursoUrl,
-    tursoTokenSet: !!tursoToken,
-    tursoUrlPrefix: tursoUrl ? tursoUrl.substring(0, 30) + '...' : null,
+    version: 'v4',
+    mode: pgUrl ? 'POSTGRES (cloud)' : 'LOCAL (file)',
+    pgUrlSet: !!pgUrl,
+    pgUrlPrefix: pgUrl ? pgUrl.substring(0, 40) + '...' : null,
     nodeEnv: env['NODE_ENV'],
-    tursoEnvKeys: allEnvKeys,
+    dbEnvKeys: allEnvKeys,
     sampleEnvKeys: sampleKeys,
     totalEnvKeys: Object.keys(env).length,
     db: dbInfo,
