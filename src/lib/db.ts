@@ -92,8 +92,12 @@ export class DbWrapper {
     if (this.pgUrl) {
       if (!pgPool) pgPool = new Pool({ connectionString: this.pgUrl });
       const { sql: pgSql, params: pgParams } = convertParams(sql, params);
-      const result = await pgPool.query(pgSql + ' RETURNING id', pgParams as never[]);
-      const lastId = result.rows?.[0]?.id ?? 0;
+      const isInsert = sql.trim().toUpperCase().startsWith('INSERT');
+      const finalSql = isInsert && !pgSql.toUpperCase().includes('RETURNING')
+        ? pgSql + ' RETURNING id'
+        : pgSql;
+      const result = await pgPool.query(finalSql, pgParams as never[]);
+      const lastId = isInsert ? (result.rows?.[0]?.id ?? 0) : 0;
       return { changes: result.rowCount ?? 0, lastInsertRowid: Number(lastId) };
     }
 
