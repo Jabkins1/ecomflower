@@ -74,7 +74,6 @@ export default function SqlConsolePage() {
 
   return (
     <div className="flex h-screen">
-      {/* Left panel: tables list */}
       <div className="w-56 bg-gray-900 text-gray-300 flex flex-col border-r border-gray-800">
         <div className="px-4 py-4 border-b border-gray-800">
           <div className="flex items-center gap-2 text-sm font-semibold text-white">
@@ -104,8 +103,6 @@ export default function SqlConsolePage() {
           </button>
         </div>
       </div>
-
-      {/* Right panel */}
       <div className="flex-1 flex flex-col overflow-hidden bg-gray-50">
         {activeTab === 'tables' && activeTable ? (
           <>
@@ -117,8 +114,6 @@ export default function SqlConsolePage() {
                 <RefreshCw size={14} />
               </button>
             </div>
-
-            {/* Column info */}
             <div className="px-6 py-2 border-b border-gray-100 bg-white">
               <div className="flex gap-2 flex-wrap">
                 {tableCols.map(col => (
@@ -160,7 +155,6 @@ export default function SqlConsolePage() {
           </>
         ) : (
           <>
-            {/* SQL Console */}
             <div className="bg-white border-b border-gray-200 px-6 py-3 flex items-center gap-3">
               <Play size={16} className="text-gray-500" />
               <h2 className="font-semibold text-gray-900">SQL Консоль</h2>

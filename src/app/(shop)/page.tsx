@@ -33,7 +33,6 @@ export default async function HomePage() {
 
   return (
     <>
-      {/* Hero */}
       <section className="relative overflow-hidden bg-gradient-to-br from-green-50 via-lime-50 to-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-20 md:py-28 flex flex-col md:flex-row items-center gap-12">
           <div className="flex-1 text-center md:text-left">
@@ -66,8 +65,6 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
-
-      {/* Advantages */}
       <section className="bg-white py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
@@ -88,8 +85,6 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
-
-      {/* Categories */}
       <section className="py-14 max-w-7xl mx-auto px-4 sm:px-6">
         <div className="flex items-end justify-between mb-8">
           <div>
@@ -118,8 +113,6 @@ export default async function HomePage() {
           ))}
         </div>
       </section>
-
-      {/* Featured Products */}
       <section className="py-14 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="flex items-end justify-between mb-8">
@@ -138,8 +131,6 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
-
-      {/* Reviews */}
       {reviews.length > 0 && (
         <section className="py-14 max-w-7xl mx-auto px-4 sm:px-6">
           <div className="flex items-end justify-between mb-8">
@@ -169,8 +160,6 @@ export default async function HomePage() {
           </div>
         </section>
       )}
-
-      {/* CTA Banner */}
       <section className="py-16 max-w-7xl mx-auto px-4 sm:px-6">
         <div className="bg-gradient-to-r from-green-500 to-lime-500 rounded-3xl p-8 md:p-12 text-center text-white">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">Нужен особенный букет?</h2>

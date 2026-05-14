@@ -81,8 +81,6 @@ export default function AdminProductsPage() {
           <Plus size={16} /> Добавить товар
         </button>
       </div>
-
-      {/* Form modal */}
       {showForm && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-2xl p-6 w-full max-w-xl shadow-xl max-h-[90vh] overflow-y-auto">
@@ -145,8 +143,6 @@ export default function AdminProductsPage() {
           </div>
         </div>
       )}
-
-      {/* Table */}
       {loading ? (
         <div className="text-center py-20 text-gray-400">Загрузка...</div>
       ) : (

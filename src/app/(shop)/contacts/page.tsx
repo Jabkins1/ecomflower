@@ -12,7 +12,6 @@ export default function ContactsPage() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_1fr] gap-8 mb-10">
-        {/* Info cards */}
         <div className="space-y-4">
           <div className="bg-white rounded-3xl p-6 shadow-sm">
             <div className="flex items-start gap-4">
@@ -73,8 +72,6 @@ export default function ContactsPage() {
             Построить маршрут на Яндекс Картах
           </a>
         </div>
-
-        {/* Yandex Map embed */}
         <div className="bg-white rounded-3xl overflow-hidden shadow-sm min-h-[480px]">
           <iframe
             src="https://yandex.ru/map-widget/v1/?ol=biz&oid=55849958151&z=17"

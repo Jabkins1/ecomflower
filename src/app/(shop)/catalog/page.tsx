@@ -47,7 +47,6 @@ function CatalogContent() {
       </div>
 
       <div className="flex flex-col md:flex-row gap-6">
-        {/* Sidebar */}
         <aside className="md:w-56 shrink-0">
           <div className="bg-white rounded-2xl p-5 shadow-sm">
             <div className="flex items-center gap-2 mb-4 text-gray-700 font-semibold">
@@ -73,8 +72,6 @@ function CatalogContent() {
             </div>
           </div>
         </aside>
-
-        {/* Products */}
         <div className="flex-1">
           <div className="relative mb-6">
             <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />

@@ -3,7 +3,6 @@ import { Heart, Users, Award, Leaf } from 'lucide-react';
 export default function AboutPage() {
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 py-12">
-      {/* Hero */}
       <div className="text-center mb-16">
         <p className="text-green-500 font-medium text-sm uppercase tracking-widest mb-3">О нас</p>
         <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">История ZELENAYA</h1>
@@ -11,8 +10,6 @@ export default function AboutPage() {
           Мы — небольшой семейный цветочный магазин с большим сердцем. С 2018 года мы дарим людям радость через красоту живых цветов.
         </p>
       </div>
-
-      {/* Story */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mb-16 items-center">
         <div>
           <img
@@ -36,8 +33,6 @@ export default function AboutPage() {
           </div>
         </div>
       </div>
-
-      {/* Values */}
       <div className="bg-white rounded-3xl p-8 md:p-12 shadow-sm mb-16">
         <h2 className="text-2xl font-bold text-gray-900 text-center mb-10">Наши ценности</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
@@ -57,8 +52,6 @@ export default function AboutPage() {
           ))}
         </div>
       </div>
-
-      {/* Team */}
       <div className="mb-16">
         <h2 className="text-2xl font-bold text-gray-900 text-center mb-10">Наша команда</h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
@@ -78,8 +71,6 @@ export default function AboutPage() {
           ))}
         </div>
       </div>
-
-      {/* Stats */}
       <div className="bg-gradient-to-r from-green-500 to-lime-500 rounded-3xl p-8 text-white text-center">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
           {[

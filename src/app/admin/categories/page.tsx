@@ -104,8 +104,6 @@ export default function AdminCategoriesPage() {
           <Plus size={16} /> Добавить категорию
         </button>
       </div>
-
-      {/* Modal */}
       {showForm && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-2xl p-6 w-full max-w-md shadow-xl">
@@ -180,8 +178,6 @@ export default function AdminCategoriesPage() {
           </div>
         </div>
       )}
-
-      {/* Table */}
       {loading ? (
         <div className="text-center py-20 text-gray-400">Загрузка...</div>
       ) : (

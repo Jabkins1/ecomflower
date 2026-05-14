@@ -107,7 +107,6 @@ export default function CheckoutPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <form onSubmit={handleSubmit} className="lg:col-span-2 space-y-6">
-          {/* Personal info */}
           <div className="bg-white rounded-2xl p-6 shadow-sm">
             <h2 className="font-bold text-gray-900 mb-5">Контактные данные</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -148,8 +147,6 @@ export default function CheckoutPage() {
               </div>
             </div>
           </div>
-
-          {/* Delivery */}
           <div className="bg-white rounded-2xl p-6 shadow-sm">
             <h2 className="font-bold text-gray-900 mb-5">Дата и место получения</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -192,8 +189,6 @@ export default function CheckoutPage() {
               </div>
             </div>
           </div>
-
-          {/* Comment */}
           <div className="bg-white rounded-2xl p-6 shadow-sm">
             <h2 className="font-bold text-gray-900 mb-4">Пожелания</h2>
             <textarea
@@ -220,8 +215,6 @@ export default function CheckoutPage() {
             {loading ? 'Оформляем...' : 'Подтвердить заказ'}
           </button>
         </form>
-
-        {/* Order summary */}
         <div className="lg:col-span-1">
           <div className="bg-white rounded-2xl p-6 shadow-sm sticky top-24">
             <h2 className="font-bold text-gray-900 text-lg mb-5 flex items-center gap-2">

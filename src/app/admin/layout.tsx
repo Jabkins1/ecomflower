@@ -18,7 +18,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   return (
     <div className="flex min-h-screen bg-gray-50" style={{ margin: 0 }}>
-      {/* Sidebar */}
       <aside className="w-60 bg-gray-900 text-gray-200 flex flex-col shrink-0">
         <div className="px-6 py-5 border-b border-gray-800">
           <div className="flex items-center gap-2 mb-1">
@@ -57,8 +56,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           </Link>
         </div>
       </aside>
-
-      {/* Main content */}
       <div className="flex-1 overflow-auto">
         {children}
       </div>

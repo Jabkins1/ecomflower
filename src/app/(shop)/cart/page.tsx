@@ -78,7 +78,6 @@ export default function CartPage() {
           ))}
         </div>
 
-        {/* Summary */}
         <div className="lg:col-span-1">
           <div className="bg-white rounded-2xl p-6 shadow-sm sticky top-24">
             <h2 className="font-bold text-gray-900 text-lg mb-5">Итого</h2>

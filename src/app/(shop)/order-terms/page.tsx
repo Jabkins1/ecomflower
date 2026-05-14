@@ -13,8 +13,6 @@ export default function OrderTermsPage() {
       </div>
 
       <div className="space-y-6">
-
-        {/* How to order */}
         <div className="bg-white rounded-3xl p-8 shadow-sm">
           <div className="flex items-center gap-3 mb-6">
             <div className="bg-green-100 p-3 rounded-2xl">
@@ -37,8 +35,6 @@ export default function OrderTermsPage() {
             ))}
           </div>
         </div>
-
-        {/* Pre-order */}
         <div className="bg-white rounded-3xl p-8 shadow-sm">
           <div className="flex items-center gap-3 mb-6">
             <div className="bg-green-100 p-3 rounded-2xl">
@@ -71,8 +67,6 @@ export default function OrderTermsPage() {
             </div>
           </div>
         </div>
-
-        {/* Delivery */}
         <div className="bg-white rounded-3xl p-8 shadow-sm">
           <div className="flex items-center gap-3 mb-6">
             <div className="bg-green-100 p-3 rounded-2xl">
@@ -100,8 +94,6 @@ export default function OrderTermsPage() {
             Время доставки: ежедневно с <strong>9:00 до 21:00</strong>.
           </p>
         </div>
-
-        {/* Payment */}
         <div className="bg-white rounded-3xl p-8 shadow-sm">
           <div className="flex items-center gap-3 mb-6">
             <div className="bg-green-100 p-3 rounded-2xl">
@@ -117,8 +109,6 @@ export default function OrderTermsPage() {
             ))}
           </div>
         </div>
-
-        {/* Cancellation */}
         <div className="bg-white rounded-3xl p-8 shadow-sm">
           <div className="flex items-center gap-3 mb-6">
             <div className="bg-amber-100 p-3 rounded-2xl">
@@ -132,8 +122,6 @@ export default function OrderTermsPage() {
             <p>Если флорист уже приступил к сборке букета, мы постараемся найти компромиссное решение.</p>
           </div>
         </div>
-
-        {/* Contact */}
         <div className="bg-gradient-to-r from-green-500 to-lime-500 rounded-3xl p-8 text-white">
           <div className="flex items-center gap-3 mb-4">
             <Phone size={24} />
