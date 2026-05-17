@@ -42,7 +42,7 @@ export default function Footer() {
               </li>
               <li className="flex items-start gap-2 text-green-200">
                 <MapPin size={15} className="mt-0.5 shrink-0" />
-                <span>г. Екатеринбург, ул. Машинная, 1В/2</span>
+                <span>Свердловская область, Екатеринбург, улица Челюскинцев, 88</span>
               </li>
             </ul>
           </div>

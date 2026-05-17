@@ -20,7 +20,7 @@ export default function ContactsPage() {
               </div>
               <div>
                 <h3 className="font-bold text-gray-900 mb-1">Адрес</h3>
-                <p className="text-gray-600">г. Екатеринбург, ул. Машинная, 1В/2</p>
+                <p className="text-gray-600">Свердловская область, Екатеринбург, улица Челюскинцев, 88</p>
                 <p className="text-gray-400 text-sm mt-1">Ближайшее метро: Чкаловская, Ботаническая</p>
               </div>
             </div>
