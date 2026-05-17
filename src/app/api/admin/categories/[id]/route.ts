@@ -4,7 +4,7 @@ import { getDb } from '@/lib/db';
 export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await params;
-    const { name, slug, description } = await request.json();
+    const { name, slug, description, image_url } = await request.json();
     if (!name || !slug) {
       return NextResponse.json({ error: 'Название и slug обязательны' }, { status: 400 });
     }
@@ -13,8 +13,8 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     if (existing) {
       return NextResponse.json({ error: 'Категория с таким slug уже существует' }, { status: 400 });
     }
-    await db.prepare('UPDATE categories SET name = ?, slug = ?, description = ? WHERE id = ?')
-      .run(name, slug, description || null, id);
+    await db.prepare('UPDATE categories SET name = ?, slug = ?, description = ?, image_url = ? WHERE id = ?')
+      .run(name, slug, description || null, image_url || null, id);
     return NextResponse.json({ success: true });
   } catch (error) {
     return NextResponse.json({ error: 'Не удалось обновить категорию' }, { status: 500 });

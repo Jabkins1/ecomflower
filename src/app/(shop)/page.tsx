@@ -15,21 +15,13 @@ export default async function HomePage() {
     ORDER BY p.created_at DESC LIMIT 6
   `).all() as unknown as Product[];
 
-  const categories = await db.prepare('SELECT * FROM categories ORDER BY name').all() as unknown as { id: number; name: string; slug: string }[];
+  const categories = await db.prepare('SELECT * FROM categories ORDER BY name').all() as unknown as { id: number; name: string; slug: string; image_url?: string }[];
 
   const reviews = await db.prepare(`
     SELECT id, customer_name, rating, text, created_at
     FROM reviews WHERE is_approved = 1
     ORDER BY created_at DESC LIMIT 4
   `).all() as unknown as Review[];
-
-  const categoryImages: Record<string, string> = {
-    'rozy':     'https://images.unsplash.com/photo-1519378058457-4c29a0a2efac?w=500&q=85',
-    'piony':    'https://images.unsplash.com/photo-1533038590840-1cde6e668a91?w=500&q=85',
-    'tyulpany': 'https://images.unsplash.com/photo-1462275646964-a0e3386b89fa?w=500&q=85',
-    'bukety':   'https://images.unsplash.com/photo-1525310072745-f49212b5ac6d?w=500&q=85',
-    'polevye':  'https://images.unsplash.com/photo-1499002238440-d264edd596ec?w=500&q=85',
-  };
 
   return (
     <>
@@ -103,7 +95,7 @@ export default async function HomePage() {
               className="group relative overflow-hidden rounded-2xl aspect-square shadow-sm hover:shadow-md transition-shadow"
             >
               <img
-                src={categoryImages[cat.slug] || 'https://images.unsplash.com/photo-1596438459194-f275f413d6ff?w=400&q=80'}
+                src={cat.image_url || 'https://images.unsplash.com/photo-1596438459194-f275f413d6ff?w=400&q=80'}
                 alt={cat.name}
                 className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
               />

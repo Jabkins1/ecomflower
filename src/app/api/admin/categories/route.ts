@@ -18,7 +18,7 @@ export async function GET() {
 
 export async function POST(request: NextRequest) {
   try {
-    const { name, slug, description } = await request.json();
+    const { name, slug, description, image_url } = await request.json();
     if (!name || !slug) {
       return NextResponse.json({ error: 'Название и slug обязательны' }, { status: 400 });
     }
@@ -28,8 +28,8 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Категория с таким slug уже существует' }, { status: 400 });
     }
     const result = await db.prepare(
-      'INSERT INTO categories (name, slug, description) VALUES (?, ?, ?)'
-    ).run(name, slug, description || null);
+      'INSERT INTO categories (name, slug, description, image_url) VALUES (?, ?, ?, ?)'
+    ).run(name, slug, description || null, image_url || null);
     return NextResponse.json({ success: true, id: result.lastInsertRowid }, { status: 201 });
   } catch (error) {
     return NextResponse.json({ error: 'Не удалось создать категорию' }, { status: 500 });

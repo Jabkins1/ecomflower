@@ -195,6 +195,7 @@ async function initializeDb(db: DbWrapper) {
       name TEXT NOT NULL,
       slug TEXT NOT NULL UNIQUE,
       description TEXT,
+      image_url TEXT,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     );
     CREATE TABLE IF NOT EXISTS products (
@@ -251,21 +252,31 @@ async function initializeDb(db: DbWrapper) {
     );
   `);
 
+  try {
+    const isPg = !!(process.env.POSTGRES_URL || process.env.DATABASE_URL);
+    if (isPg) {
+      await db.exec('ALTER TABLE categories ADD COLUMN IF NOT EXISTS image_url TEXT');
+    } else {
+      await db.exec('ALTER TABLE categories ADD COLUMN image_url TEXT');
+    }
+  } catch {
+  }
+
   const row = await db.prepare('SELECT COUNT(*) as c FROM categories').get() as { c: number } | undefined;
   if (!row || Number(row.c) === 0) await seedData(db);
 }
 
 async function seedData(db: DbWrapper) {
   const categories = [
-    ['Розы', 'rozy', 'Классические розы всех сортов и оттенков'],
-    ['Пионы', 'piony', 'Нежные и пышные пионы'],
-    ['Тюльпаны', 'tyulpany', 'Весенние тюльпаны разных цветов'],
-    ['Букеты', 'bukety', 'Готовые букеты для любого повода'],
-    ['Полевые цветы', 'polevye', 'Нежные полевые цветы и луговые миксы'],
+    ['Розы', 'rozy', 'Классические розы всех сортов и оттенков', 'https://images.unsplash.com/photo-1519378058457-4c29a0a2efac?w=500&q=85'],
+    ['Пионы', 'piony', 'Нежные и пышные пионы', 'https://images.unsplash.com/photo-1533038590840-1cde6e668a91?w=500&q=85'],
+    ['Тюльпаны', 'tyulpany', 'Весенние тюльпаны разных цветов', 'https://images.unsplash.com/photo-1462275646964-a0e3386b89fa?w=500&q=85'],
+    ['Букеты', 'bukety', 'Готовые букеты для любого повода', 'https://images.unsplash.com/photo-1525310072745-f49212b5ac6d?w=500&q=85'],
+    ['Полевые цветы', 'polevye', 'Нежные полевые цветы и луговые миксы', 'https://images.unsplash.com/photo-1499002238440-d264edd596ec?w=500&q=85'],
   ];
 
   for (const category of categories) {
-    await db.prepare('INSERT INTO categories (name, slug, description) VALUES (?, ?, ?)').run(...category);
+    await db.prepare('INSERT INTO categories (name, slug, description, image_url) VALUES (?, ?, ?, ?)').run(...category);
   }
 
   const products: unknown[][] = [

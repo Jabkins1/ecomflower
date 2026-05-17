@@ -8,10 +8,11 @@ interface Category {
   name: string;
   slug: string;
   description?: string;
+  image_url?: string;
   product_count: number;
 }
 
-const emptyForm = { name: '', slug: '', description: '' };
+const emptyForm = { name: '', slug: '', description: '', image_url: '' };
 
 function toSlug(str: string) {
   const map: Record<string, string> = {
@@ -46,7 +47,7 @@ export default function AdminCategoriesPage() {
 
   const openAdd = () => { setForm(emptyForm); setEditId(null); setError(''); setShowForm(true); };
   const openEdit = (c: Category) => {
-    setForm({ name: c.name, slug: c.slug, description: c.description || '' });
+    setForm({ name: c.name, slug: c.slug, description: c.description || '', image_url: c.image_url || '' });
     setEditId(c.id);
     setError('');
     setShowForm(true);
@@ -153,6 +154,21 @@ export default function AdminCategoriesPage() {
                 />
               </div>
 
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">Изображение (URL)</label>
+                <input
+                  value={form.image_url}
+                  onChange={e => setForm(p => ({ ...p, image_url: e.target.value }))}
+                  className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-green-400"
+                  placeholder="https://images.unsplash.com/..."
+                />
+                {form.image_url && (
+                  <div className="mt-2 rounded-xl overflow-hidden h-28 w-full bg-gray-100">
+                    <img src={form.image_url} alt="Предпросмотр" className="w-full h-full object-cover" />
+                  </div>
+                )}
+              </div>
+
               {error && (
                 <div className="bg-red-50 border border-red-200 text-red-600 px-3 py-2.5 rounded-xl text-sm">
                   {error}
@@ -196,10 +212,14 @@ export default function AdminCategoriesPage() {
               {categories.map(cat => (
                 <tr key={cat.id} className="hover:bg-gray-50 transition-colors">
                   <td className="px-6 py-4">
-                    <div className="flex items-center gap-2">
-                      <div className="bg-green-100 p-1.5 rounded-lg">
-                        <Tag size={13} className="text-green-500" />
-                      </div>
+                    <div className="flex items-center gap-3">
+                      {cat.image_url ? (
+                        <img src={cat.image_url} alt={cat.name} className="w-10 h-10 rounded-lg object-cover shrink-0" />
+                      ) : (
+                        <div className="bg-green-100 p-1.5 rounded-lg shrink-0">
+                          <Tag size={13} className="text-green-500" />
+                        </div>
+                      )}
                       <span className="font-medium text-gray-800">{cat.name}</span>
                     </div>
                   </td>
