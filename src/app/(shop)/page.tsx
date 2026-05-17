@@ -26,6 +26,9 @@ export default async function HomePage() {
   const heroSetting = await db.prepare("SELECT value FROM site_settings WHERE key = 'hero_image_url'").get() as { value: string } | undefined;
   const heroImageUrl = heroSetting?.value || '';
 
+  const heroPhotoSetting = await db.prepare("SELECT value FROM site_settings WHERE key = 'hero_photo_url'").get() as { value: string } | undefined;
+  const heroPhotoUrl = heroPhotoSetting?.value || 'https://images.unsplash.com/photo-1522748906645-95d8adfd52c7?w=700&q=85';
+
   return (
     <>
       <section className="relative overflow-hidden bg-gradient-to-br from-green-50 via-lime-50 to-white">
@@ -62,7 +65,7 @@ export default async function HomePage() {
             <div className="relative w-full max-w-md mx-auto">
               <div className="absolute inset-0 bg-green-100 rounded-full blur-3xl opacity-40" />
               <img
-                src="https://images.unsplash.com/photo-1522748906645-95d8adfd52c7?w=700&q=85"
+                src={heroPhotoUrl}
                 alt="Красивый букет цветов"
                 className="relative z-10 w-full rounded-3xl shadow-2xl object-cover aspect-square"
               />

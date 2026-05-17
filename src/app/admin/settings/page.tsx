@@ -5,6 +5,7 @@ import { Check, Settings } from 'lucide-react';
 
 export default function AdminSettingsPage() {
   const [heroImageUrl, setHeroImageUrl] = useState('');
+  const [heroPhotoUrl, setHeroPhotoUrl] = useState('');
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -15,6 +16,7 @@ export default function AdminSettingsPage() {
       .then(r => r.json())
       .then(data => {
         setHeroImageUrl(data.hero_image_url ?? '');
+        setHeroPhotoUrl(data.hero_photo_url ?? '');
       });
   }, []);
 
@@ -26,7 +28,7 @@ export default function AdminSettingsPage() {
     await fetch('/api/admin/settings', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ hero_image_url: heroImageUrl }),
+      body: JSON.stringify({ hero_image_url: heroImageUrl, hero_photo_url: heroPhotoUrl }),
     });
     setSaving(false);
     setSaved(true);
@@ -66,6 +68,25 @@ export default function AdminSettingsPage() {
               <span className="absolute inset-0 flex items-center justify-center text-white font-bold text-lg">
                 Дарите цветы с любовью
               </span>
+            </div>
+          )}
+        </div>
+
+        <div>
+          <h2 className="font-semibold text-gray-800 mb-1">Фото букета (hero-секция, справа)</h2>
+          <p className="text-gray-400 text-sm mb-4">
+            Квадратная картинка рядом с текстом на главной странице.
+          </p>
+          <label className="block text-sm font-medium text-gray-700 mb-1.5">URL изображения</label>
+          <input
+            value={heroPhotoUrl}
+            onChange={e => setHeroPhotoUrl(e.target.value)}
+            className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-green-400"
+            placeholder="https://images.unsplash.com/photo-...?w=700&q=85"
+          />
+          {heroPhotoUrl && (
+            <div className="mt-3 rounded-2xl overflow-hidden h-40 w-40 bg-gray-100">
+              <img src={heroPhotoUrl} alt="Предпросмотр" className="w-full h-full object-cover" />
             </div>
           )}
         </div>

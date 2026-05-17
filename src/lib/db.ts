@@ -271,6 +271,11 @@ async function initializeDb(db: DbWrapper) {
     await db.prepare("INSERT INTO site_settings (key, value) VALUES ('hero_image_url', '')").run();
   }
 
+  const photoRow = await db.prepare("SELECT COUNT(*) as c FROM site_settings WHERE key = 'hero_photo_url'").get() as { c: number } | undefined;
+  if (!photoRow || Number(photoRow.c) === 0) {
+    await db.prepare("INSERT INTO site_settings (key, value) VALUES ('hero_photo_url', '')").run();
+  }
+
   const row = await db.prepare('SELECT COUNT(*) as c FROM categories').get() as { c: number } | undefined;
   if (!row || Number(row.c) === 0) await seedData(db);
 }
