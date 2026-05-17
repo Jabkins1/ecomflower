@@ -94,7 +94,7 @@ export class DbWrapper {
       const { sql: pgSql, params: pgParams } = convertParams(sql, params);
       const isInsert = sql.trim().toUpperCase().startsWith('INSERT');
       const finalSql = isInsert && !pgSql.toUpperCase().includes('RETURNING')
-        ? pgSql + ' RETURNING id'
+        ? pgSql + ' RETURNING *'
         : pgSql;
       const result = await pgPool.query(finalSql, pgParams as never[]);
       const lastId = isInsert ? (result.rows?.[0]?.id ?? 0) : 0;
