@@ -250,6 +250,10 @@ async function initializeDb(db: DbWrapper) {
       is_approved INTEGER DEFAULT 0,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     );
+    CREATE TABLE IF NOT EXISTS site_settings (
+      key TEXT PRIMARY KEY,
+      value TEXT
+    );
   `);
 
   try {
@@ -260,6 +264,11 @@ async function initializeDb(db: DbWrapper) {
       await db.exec('ALTER TABLE categories ADD COLUMN image_url TEXT');
     }
   } catch {
+  }
+
+  const settingsRow = await db.prepare("SELECT COUNT(*) as c FROM site_settings WHERE key = 'hero_image_url'").get() as { c: number } | undefined;
+  if (!settingsRow || Number(settingsRow.c) === 0) {
+    await db.prepare("INSERT INTO site_settings (key, value) VALUES ('hero_image_url', '')").run();
   }
 
   const row = await db.prepare('SELECT COUNT(*) as c FROM categories').get() as { c: number } | undefined;

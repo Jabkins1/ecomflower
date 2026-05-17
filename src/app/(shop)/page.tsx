@@ -23,17 +23,30 @@ export default async function HomePage() {
     ORDER BY created_at DESC LIMIT 4
   `).all() as unknown as Review[];
 
+  const heroSetting = await db.prepare("SELECT value FROM site_settings WHERE key = 'hero_image_url'").get() as { value: string } | undefined;
+  const heroImageUrl = heroSetting?.value || '';
+
   return (
     <>
       <section className="relative overflow-hidden bg-gradient-to-br from-green-50 via-lime-50 to-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-20 md:py-28 flex flex-col md:flex-row items-center gap-12">
+        {heroImageUrl && (
+          <>
+            <img
+              src={heroImageUrl}
+              alt=""
+              className="absolute inset-0 w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-black/50" />
+          </>
+        )}
+        <div className={`relative z-10 max-w-7xl mx-auto px-4 sm:px-6 py-20 md:py-28 flex flex-col md:flex-row items-center gap-12${heroImageUrl ? ' text-white' : ''}`}>
           <div className="flex-1 text-center md:text-left">
-            <p className="text-green-500 font-medium text-sm uppercase tracking-widest mb-3">Свежие цветы ежедневно</p>
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight mb-6">
+            <p className={`font-medium text-sm uppercase tracking-widest mb-3 ${heroImageUrl ? 'text-green-300' : 'text-green-500'}`}>Свежие цветы ежедневно</p>
+            <h1 className={`text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6 ${heroImageUrl ? 'text-white' : 'text-gray-900'}`}>
               Дарите цветы<br />
-              <span className="text-green-500">с любовью</span>
+              <span className={heroImageUrl ? 'text-green-300' : 'text-green-500'}>с любовью</span>
             </h1>
-            <p className="text-gray-500 text-lg leading-relaxed mb-8 max-w-lg mx-auto md:mx-0">
+            <p className={`text-lg leading-relaxed mb-8 max-w-lg mx-auto md:mx-0 ${heroImageUrl ? 'text-white/80' : 'text-gray-500'}`}>
               Свежие розы, пышные пионы, нежные тюльпаны и авторские букеты. Доставим в день заказа по всему городу.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">

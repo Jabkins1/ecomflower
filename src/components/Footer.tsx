@@ -52,7 +52,7 @@ export default function Footer() {
             <ul className="space-y-2 text-sm text-green-200">
               <li className="flex items-center gap-2">
                 <Clock size={15} className="shrink-0" />
-                <span>Ежедневно: 10:00–21:00</span>
+                <span>Ежедневно: 09:00–21:00</span>
               </li>
             </ul>
           </div>

@@ -56,14 +56,14 @@ export default function ContactsPage() {
               <div>
                 <h3 className="font-bold text-gray-900 mb-1">Режим работы</h3>
                 <ul className="text-gray-600 space-y-1">
-                  <li className="flex justify-between gap-8"><span>Ежедневно</span><span className="font-medium">10:00–21:00</span></li>
+                  <li className="flex justify-between gap-8"><span>Ежедневно</span><span className="font-medium">09:00–21:00</span></li>
                 </ul>
               </div>
             </div>
           </div>
 
           <a
-            href="https://yandex.ru/maps/org/tsvety/55849958151/"
+            href="https://yandex.ru/maps/org/tsvetochny_magazin/36422291521/?ll=60.598840%2C56.853966&z=16"
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center justify-center gap-2 bg-green-500 hover:bg-green-600 text-white py-3.5 px-6 rounded-2xl font-semibold transition-colors"
@@ -74,7 +74,7 @@ export default function ContactsPage() {
         </div>
         <div className="bg-white rounded-3xl overflow-hidden shadow-sm min-h-[480px]">
           <iframe
-            src="https://yandex.ru/map-widget/v1/?ol=biz&oid=55849958151&z=17"
+            src="https://yandex.ru/map-widget/v1/?ol=biz&oid=36422291521&z=16"
             width="100%"
             height="100%"
             style={{ border: 0, minHeight: '480px' }}

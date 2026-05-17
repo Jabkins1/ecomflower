@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, Package, Database, ShoppingCart, ExternalLink, Tag, MessageSquare } from 'lucide-react';
+import { LayoutDashboard, Package, Database, ShoppingCart, ExternalLink, Tag, MessageSquare, Settings } from 'lucide-react';
 
 const navItems = [
   { href: '/admin', label: 'Дашборд', icon: LayoutDashboard, exact: true },
@@ -11,6 +11,7 @@ const navItems = [
   { href: '/admin/orders', label: 'Заказы', icon: ShoppingCart },
   { href: '/admin/reviews', label: 'Отзывы', icon: MessageSquare },
   { href: '/admin/sql', label: 'SQL Консоль', icon: Database },
+  { href: '/admin/settings', label: 'Настройки', icon: Settings },
 ];
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
